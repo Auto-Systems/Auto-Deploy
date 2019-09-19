@@ -1,4 +1,4 @@
-require('module-alias');
+// API/src/Library/getDbConnection.ts
 import { config } from 'API/config';
 import { resolve } from 'path';
 import { createConnection } from 'typeorm';
@@ -23,20 +23,6 @@ export function getConnectionArgs(
     logging: true,
   };
 }
-
-export const connectionArgs: PostgresConnectionOptions = {
-  type: 'postgres',
-  database: config.db.name,
-  username: config.db.username,
-  password: config.db.password,
-  port: config.db.port,
-  host: config.db.host,
-  entities: [
-    resolve(`${__dirname}/../Modules/**/*Model.ts`),
-  ],
-  synchronize: true || config.env === 'development',
-  logging: true,
-};
 
 export async function ensureDbConnection() {
   try {
