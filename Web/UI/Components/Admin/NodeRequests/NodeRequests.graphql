@@ -1,0 +1,12 @@
+query NodeRequests {
+  nodeRequests {
+    name
+    purpose
+    id
+    createdAt
+    configurationFile
+    user {
+      username
+    }
+  }
+}

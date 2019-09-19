@@ -1,0 +1,6 @@
+mutation RequestNewNode($input: SubmitNodeRequestInput!){
+  submitNodeRequest(input: $input) {
+    id
+    name
+  }
+}

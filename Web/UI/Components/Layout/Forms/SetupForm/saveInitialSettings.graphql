@@ -1,0 +1,3 @@
+mutation saveInitialSettings($input: InitialConfigurationInput!) {
+  initialConfiguration(input: $input)
+}

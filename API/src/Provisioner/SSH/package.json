@@ -1,0 +1,21 @@
+{
+  "name": "SSH",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@johnls/ssh2-promise": "^1.0.0",
+    "node-forge": "^0.8.5",
+    "node-ssh": "^6.0.0",
+    "ssh2-promise": "^0.1.5"
+  },
+  "devDependencies": {
+    "@types/node-forge": "^0.8.6"
+  }
+}

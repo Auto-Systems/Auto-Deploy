@@ -1,0 +1,13 @@
+version: '3'
+services:
+  database:
+    image: postgres:11-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_PASSWORD: pgpass
+      POSTGRES_DB: autodeploy
+volumes:
+  pgdata:

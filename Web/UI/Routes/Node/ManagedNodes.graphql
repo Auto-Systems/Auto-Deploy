@@ -1,0 +1,5 @@
+query ManagedNodes {
+  managedNodes {
+    name
+  }
+}

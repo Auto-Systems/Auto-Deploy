@@ -1,0 +1,23 @@
+overwrite: true
+schema: 'http://localhost/graphql'
+documents: 'UI/**/*.graphql'
+generates:
+  UI/GraphQL/graphqlTypes.gen.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+  types/graphql.d.ts:
+    - typescript-graphql-files-modules
+  .:
+    preset: near-operation-file
+    presetConfig:
+      extension: .gen.ts
+      baseTypesPath: UI/GraphQL/graphqlTypes.gen.ts
+    config:
+      noGraphQLTag: true
+      withHOC: false
+      withComponent: false
+      withHooks: true
+    plugins:
+      - typescript-react-apollo
+      - typescript-operations

@@ -1,0 +1,3 @@
+[submodule "API/src/Controller/vCenter"]
+	path = API/src/Controller/vCenter
+	url = https://github.com/KristianFJones/Auto-Deploy-vCenter-Controller.git

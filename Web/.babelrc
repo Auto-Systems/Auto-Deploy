@@ -1,0 +1,25 @@
+{
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "root": ["."],
+        "alias": {
+          "UI": "./UI",
+          "Server": "./Server"
+        }
+      }
+    ],
+    ["react-loadable/babel"]
+  ],
+  "env": {
+    "server": {
+      "presets": [["@babel/preset-env", { "targets": { "node": "current" } }]],
+      "plugins": [
+        ["react-loadable/babel"],
+        ["@babel/plugin-syntax-dynamic-import"],
+        ["babel-plugin-dynamic-import-node"]
+      ]
+    }
+  }
+}

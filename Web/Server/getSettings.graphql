@@ -1,0 +1,5 @@
+query getSettings($secret: String!) {
+  getSettings(secret: $secret) {
+    appName
+  }
+}

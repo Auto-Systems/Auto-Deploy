@@ -1,0 +1,6 @@
+query userCheck {
+  userCheck {
+    isAuthed
+    role
+  }
+}

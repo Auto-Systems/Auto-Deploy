@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["dom", "esnext", "esnext.asynciterable"],
+    "jsx": "react",
+    "outDir": "./dist",
+    "strict": false,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "UI/*": ["./UI/*"],
+      "Server": ["./Server/*"]
+    },
+    "typeRoots": ["./types"],
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true
+  }
+}

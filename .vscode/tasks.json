@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "API Debug",
+      "command": "npm",
+      "options": {
+        "cwd": "${workspaceFolder}/services/Backend",
+        "env": {
+          "DB_HOST": "localhost"
+        }
+      },
+      "args": ["run", "dev"],
+      "type": "shell",
+      "isBackground": true,
+      "group": "build",
+      "presentation": {
+        "reveal": "always"
+      }
+    }
+  ]
+}

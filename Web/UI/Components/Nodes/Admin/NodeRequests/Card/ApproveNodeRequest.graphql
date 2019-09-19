@@ -1,0 +1,6 @@
+mutation ApproveNodeRequest($input: ApproveNodeRequestInput!, $requestId: String!) {
+  approveNodeRequest(input: $input, requestId: $requestId) {
+    name
+    id
+  }
+}
