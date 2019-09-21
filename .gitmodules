@@ -1,3 +1,7 @@
 [submodule "API/src/Controller/vCenter"]
 	path = API/src/Controller/vCenter
 	url = https://github.com/KristianFJones/Auto-Deploy-vCenter-Controller.git
+[submodule "API/src/Controller"]
+	path = API/src/Controller
+	url = https://github.com/Auto-Systems/Controller-Core.git
+	branch = master
