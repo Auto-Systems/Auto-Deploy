@@ -72,28 +72,12 @@ export const ApproveRequest: DocumentNode;
 }
     
 
-declare module '*/Hosts.graphql' {
-  import { DocumentNode } from 'graphql';
-  const defaultDocument: DocumentNode;
-  export const Hosts: DocumentNode;
-
-  export default defaultDocument;
-}
-    
-
-declare module '*/Networks.graphql' {
-  import { DocumentNode } from 'graphql';
-  const defaultDocument: DocumentNode;
-  export const Networks: DocumentNode;
-
-  export default defaultDocument;
-}
-    
-
-declare module '*/Storages.graphql' {
+declare module '*/ControllerNodes.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
   export const Storages: DocumentNode;
+export const Networks: DocumentNode;
+export const Hosts: DocumentNode;
 
   export default defaultDocument;
 }

@@ -15,6 +15,11 @@ type AuthOutput {
   role: [UserRole!]!
 }
 
+interface BaseCoreNode {
+  name: String!
+  id: String!
+}
+
 type Configuration {
   id: ID!
   createdAt: DateTime!
@@ -31,6 +36,18 @@ type Controller {
   createdAt: DateTime!
   active: Boolean!
   name: String!
+}
+
+type ControllerNode implements BaseCoreNode {
+  name: String!
+  id: String!
+}
+
+enum ControllerxNodeTypes {
+  NETWORK
+  STORAGE
+  HOST
+  CORE_TEMPLATE
 }
 
 interface CoreNode {
@@ -68,11 +85,6 @@ scalar DateTime
 input ENV {
   key: String!
   value: String!
-}
-
-type Host implements CoreNode {
-  name: String!
-  id: String!
 }
 
 input InitialConfigurationInput {
@@ -164,11 +176,6 @@ type Mutation {
   uploadConfiguration(env: [ENV!]!, file: String!, nodeId: String!): String!
 }
 
-type Network implements CoreNode {
-  name: String!
-  id: String!
-}
-
 """Auto Deploy Node"""
 type Node implements CoreNode {
   name: String!
@@ -227,9 +234,10 @@ type Query {
   getInitialControllers: [InitialModule!]!
   getIntialProvisioners: [InitialModule!]!
   getSetupCompleted(secret: String!): Boolean!
+  getControllerNodes(type: ControllerxNodeTypes!): [ControllerNode!]!
+  getControllerNode(id: String!, type: ControllerxNodeTypes!): ControllerNode!
   controllers: [Controller!]!
   coreTemplates: [CoreTemplate!]!
-  hosts: [Host!]!
   libraries: [Library!]!
   libraryItem(id: String!): LibraryItem!
   libraryItems: [LibraryItem!]!
@@ -237,7 +245,6 @@ type Query {
   managedNodes: [ManagedNode!]!
   managedNode(nodeId: String!): ManagedNode!
   nodeRequests: [NodeRequest!]!
-  networks: [Network!]!
 
   """Returns nodes from active controller module"""
   nodes: [Node]!

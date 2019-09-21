@@ -1,11 +1,9 @@
 // Web/UI/Components/Nodes/Admin/NodeRequests/Dialog/index.tsx
 import React, { useState, ChangeEvent, useCallback } from 'react';
 import { FormDialog } from 'UI/Components/Style/Dialog/FormDialog';
-import { useStoragesQuery } from './Storages.gen';
 import { useApproveRequestMutation } from './ApproveNodeRequest.gen';
 import { BaseSelect } from 'UI/Components/Style/Select/BaseSelect';
-import { useNetworksQuery } from './Networks.gen';
-import { useHostsQuery } from './Hosts.gen';
+import { useNetworksQuery, useStoragesQuery, useHostsQuery } from './ControllerNodes.gen'
 
 interface DialogProps {
   open: boolean;
@@ -76,8 +74,8 @@ export function ApproveNodeRequestDialog({
         onChange={handleChange('storage')}
         value={getValue('storage')}
         items={
-          storageData && storageData.storages
-            ? storageData.storages.map(({ name: label, id: value }) => ({
+          storageData && storageData.getControllerNodes
+            ? storageData.getControllerNodes.map(({ name: label, id: value }) => ({
                 label,
                 value,
               }))
@@ -90,8 +88,8 @@ export function ApproveNodeRequestDialog({
         value={getValue('host')}
         onChange={handleChange('host')}
         items={
-          hostsData && hostsData.hosts
-            ? hostsData.hosts.map(({ name: label, id: value }) => ({
+          hostsData && hostsData.getControllerNodes
+            ? hostsData.getControllerNodes.map(({ name: label, id: value }) => ({
                 label,
                 value,
               }))
@@ -104,8 +102,8 @@ export function ApproveNodeRequestDialog({
         onChange={handleChange('network')}
         value={getValue('network')}
         items={
-          networksData && networksData.networks
-            ? networksData.networks.map(({ name: label, id: value }) => ({
+          networksData && networksData.getControllerNodes
+            ? networksData.getControllerNodes.map(({ name: label, id: value }) => ({
                 label,
                 value,
               }))

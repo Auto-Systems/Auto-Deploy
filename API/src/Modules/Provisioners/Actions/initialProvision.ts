@@ -15,7 +15,7 @@ interface ProvisionNodeInput {
   provisioner: ProvisionerContext;
   type: ProvisionTypes;
   node: string;
-  coreTemplateId: number
+  coreTemplateId: string
 }
 
 export async function initialProvisionNode({

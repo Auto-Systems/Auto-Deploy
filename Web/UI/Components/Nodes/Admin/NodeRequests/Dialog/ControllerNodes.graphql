@@ -1,0 +1,19 @@
+query Storages {
+  getControllerNodes(type: STORAGE) {
+    name
+    id
+  }
+}
+query Networks {
+  getControllerNodes(type: NETWORK) {
+    name
+    id
+  }
+}
+
+query Hosts {
+  getControllerNodes(type: HOST) {
+    name
+    id
+  }
+}

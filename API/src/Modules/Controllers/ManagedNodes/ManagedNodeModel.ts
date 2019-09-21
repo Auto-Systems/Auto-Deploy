@@ -44,7 +44,7 @@ export class ManagedNode extends BaseEntity {
   @ManyToOne(() => CoreTemplate, (coreTemplate) => coreTemplate.managedNodes)
   readonly coreTemplate: CoreTemplate;
   @Column()
-  coreTemplateId: number;
+  coreTemplateId: string;
 
   @Field({ description: `Controller's Node ID` })
   @Column('text')

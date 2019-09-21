@@ -23,6 +23,11 @@ export type AuthOutput = {
   role: Array<UserRole>,
 };
 
+export type BaseCoreNode = {
+  name: Scalars['String'],
+  id: Scalars['String'],
+};
+
 export type Configuration = {
    __typename?: 'Configuration',
   id: Scalars['ID'],
@@ -42,6 +47,19 @@ export type Controller = {
   active: Scalars['Boolean'],
   name: Scalars['String'],
 };
+
+export type ControllerNode = BaseCoreNode & {
+   __typename?: 'ControllerNode',
+  name: Scalars['String'],
+  id: Scalars['String'],
+};
+
+export enum ControllerxNodeTypes {
+  Network = 'NETWORK',
+  Storage = 'STORAGE',
+  Host = 'HOST',
+  CoreTemplate = 'CORE_TEMPLATE'
+}
 
 export type CoreNode = {
   name: Scalars['String'],
@@ -75,12 +93,6 @@ export type CreateLifecycleInput = {
 export type Env = {
   key: Scalars['String'],
   value: Scalars['String'],
-};
-
-export type Host = CoreNode & {
-   __typename?: 'Host',
-  name: Scalars['String'],
-  id: Scalars['String'],
 };
 
 export type InitialConfigurationInput = {
@@ -252,12 +264,6 @@ export type MutationUploadConfigurationArgs = {
   nodeId: Scalars['String']
 };
 
-export type Network = CoreNode & {
-   __typename?: 'Network',
-  name: Scalars['String'],
-  id: Scalars['String'],
-};
-
 /** Auto Deploy Node */
 export type Node = CoreNode & {
    __typename?: 'Node',
@@ -321,9 +327,10 @@ export type Query = {
   getInitialControllers: Array<InitialModule>,
   getIntialProvisioners: Array<InitialModule>,
   getSetupCompleted: Scalars['Boolean'],
+  getControllerNodes: Array<ControllerNode>,
+  getControllerNode: ControllerNode,
   controllers: Array<Controller>,
   coreTemplates: Array<CoreTemplate>,
-  hosts: Array<Host>,
   libraries: Array<Library>,
   libraryItem: LibraryItem,
   libraryItems: Array<LibraryItem>,
@@ -331,7 +338,6 @@ export type Query = {
   managedNodes: Array<ManagedNode>,
   managedNode: ManagedNode,
   nodeRequests: Array<NodeRequest>,
-  networks: Array<Network>,
   /** Returns nodes from active controller module */
   nodes: Array<Maybe<Node>>,
   testNodeStuff: Scalars['Boolean'],
@@ -342,6 +348,17 @@ export type Query = {
 
 export type QueryGetSetupCompletedArgs = {
   secret: Scalars['String']
+};
+
+
+export type QueryGetControllerNodesArgs = {
+  type: ControllerxNodeTypes
+};
+
+
+export type QueryGetControllerNodeArgs = {
+  id: Scalars['String'],
+  type: ControllerxNodeTypes
 };
 
 
@@ -512,14 +529,14 @@ export type ApproveRequestMutation = (
   ) }
 );
 
-export type HostsQueryVariables = {};
+export type StoragesQueryVariables = {};
 
 
-export type HostsQuery = (
+export type StoragesQuery = (
   { __typename?: 'Query' }
-  & { hosts: Array<(
-    { __typename?: 'Host' }
-    & Pick<Host, 'name' | 'id'>
+  & { getControllerNodes: Array<(
+    { __typename?: 'ControllerNode' }
+    & Pick<ControllerNode, 'name' | 'id'>
   )> }
 );
 
@@ -528,20 +545,20 @@ export type NetworksQueryVariables = {};
 
 export type NetworksQuery = (
   { __typename?: 'Query' }
-  & { networks: Array<(
-    { __typename?: 'Network' }
-    & Pick<Network, 'name' | 'id'>
+  & { getControllerNodes: Array<(
+    { __typename?: 'ControllerNode' }
+    & Pick<ControllerNode, 'name' | 'id'>
   )> }
 );
 
-export type StoragesQueryVariables = {};
+export type HostsQueryVariables = {};
 
 
-export type StoragesQuery = (
+export type HostsQuery = (
   { __typename?: 'Query' }
-  & { storages: Array<(
-    { __typename?: 'Storage' }
-    & Pick<Storage, 'name' | 'id'>
+  & { getControllerNodes: Array<(
+    { __typename?: 'ControllerNode' }
+    & Pick<ControllerNode, 'name' | 'id'>
   )> }
 );
 

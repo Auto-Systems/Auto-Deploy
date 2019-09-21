@@ -1,6 +1,0 @@
-query Hosts {
-  hosts {
-    name
-    id
-  }
-}

@@ -30,8 +30,8 @@ export class NodeAuth {
 @Entity()
 export class CoreTemplate extends BaseEntity {
   @Field(() => ID)
-  @PrimaryGeneratedColumn()
-  readonly id: number;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
   @Field(() => Date)
   @CreateDateColumn()

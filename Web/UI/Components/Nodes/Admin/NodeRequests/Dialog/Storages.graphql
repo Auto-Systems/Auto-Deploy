@@ -1,6 +1,0 @@
-query Storages {
-  storages {
-    name
-    id
-  }
-}

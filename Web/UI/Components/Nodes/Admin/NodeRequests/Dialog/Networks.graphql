@@ -1,6 +1,0 @@
-query Networks {
-  networks {
-    name
-    id
-  }
-}
