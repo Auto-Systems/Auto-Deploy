@@ -1,7 +1,15 @@
-import { NodeOS } from 'API/Modules/Controllers/Nodes/NodeOS';
-import { NodePower } from 'API/Modules/Controllers/Nodes/NodePower';
-
 // API/src/Controller/types.ts
+export enum NodeOS {
+  UBUNTU = 'UBUNTU',
+  DEBIAN = 'DEBIAN'
+}
+
+export enum NodePower {
+  ON = 'ON',
+  OFF = 'OFF',
+  SUSPENDED = 'SUSPENDED'
+}
+
 export interface Node {
   name: string;
   id: string;

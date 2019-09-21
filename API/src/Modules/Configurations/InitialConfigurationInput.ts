@@ -10,5 +10,8 @@ export class InitialConfigurationInput {
   controllerConnection: string
 
   @Field()
-  activeControllerId: number
+  initialControllerGit: string
+
+  @Field()
+  initialProvisionerGit: string
 }

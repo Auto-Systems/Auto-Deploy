@@ -35,8 +35,8 @@ import { ApolloError } from 'apollo-server-koa';
 export class ManagedNodeResovler {
   @Authorized(['Admin'])
   @Query(() => [ManagedNode])
-  async getAllManagedNodes(): Promise<ManagedNode[]> {
-    return ManagedNode.find({ relations: ['coreTemplate'] });
+  async getAllManagedNodes(@Ctx() { controller: { record } }: AuthContext): Promise<ManagedNode[]> {
+    return ManagedNode.find({ relations: ['coreTemplate'], where: { controllerId: record.id } });
   }
 
   @Authorized()
@@ -113,7 +113,7 @@ export class ManagedNodeResovler {
   ): Promise<ManagedNode> {
     const { controller, record } = controllerContext;
     // const { provisioner } = provisionerContext
-    const nodeRequest = await NodeRequest.findOneOrFail(requestId);
+    const nodeRequest = await NodeRequest.findOneOrFail(requestId, { relations: ['config'] });
     const coreTemplate = await CoreTemplate.findOneOrFail({
       where: { os: nodeRequest.os },
     });
@@ -155,6 +155,8 @@ export class ManagedNodeResovler {
       type: ProvisionTypes.PROD,
     });
 
+    console.log(nodeRequest)
+
     if (nodeRequest.configurationFile) {
       const base64 = nodeRequest.configurationFile.replace(
         /data:.*;base64,/,
@@ -176,7 +178,7 @@ export class ManagedNodeResovler {
         await processInstall(network.host, configuration.install);
 
       if (configuration.exec && configuration.exec.length > 0)
-        await processEXEC(network.host, configuration.exec, []);
+        await processEXEC(network.host, configuration.exec, nodeRequest.config);
     }
 
     return newManagedNode;

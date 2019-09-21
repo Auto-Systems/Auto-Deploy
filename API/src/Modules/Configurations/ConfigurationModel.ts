@@ -26,17 +26,8 @@ export class Configuration extends BaseEntity {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @Field({ nullable: true })
-  @Column('varchar', { nullable: true })
-  controllerGit: string;
-
-  @ManyToOne(() => Configuration, { lazy: true })
-  activeController: Controller;
-  @Column()
-  activeControllerId: number;
-
   @ManyToOne(() => Provisioner, { nullable: true, lazy: true })
-  activeProvisioner: Provisioner;
+  readonly activeProvisioner: Provisioner;
   @Column({ nullable: true })
   activeProvisionerId: number;
 

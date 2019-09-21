@@ -21,9 +21,11 @@ import { extractController } from './getActiveController';
 import { loadMethod } from 'API/Controller/Decorators/MethodDecorator';
 import { ControllerContext } from 'API/Context';
 import { resolve } from 'path';
-import { Configuration } from '../Configurations/ConfigurationModel';
 import { Writable } from 'stream';
 import Dockerode from 'dockerode';
+import pEvent from 'p-event';
+
+const timeout = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 @ObjectType()
 @Entity()
@@ -40,13 +42,17 @@ export class Controller extends BaseEntity {
   readonly updatedAt: Date;
 
   @Field()
+  @Column('bool', { unique: true })
+  active: boolean;
+
+  @Field()
   @Column('text')
   name: string;
 
-  @Column('text', { unique: true })
+  @Column('varchar', { unique: true })
   path: string;
 
-  @Column('text', { nullable: true })
+  @Column('varchar', { nullable: true })
   connection: string;
 
   @OneToMany(() => ManagedNode, (managedNode) => managedNode.controller)
@@ -58,34 +64,28 @@ export class Controller extends BaseEntity {
   @OneToMany(() => User, (user) => user.controller)
   users: User[];
 
-  static async downloadController(): Promise<void> {
-    const configuration = await Configuration.findOne({ id: 1 });
-
-    if (!configuration || !configuration.controllerGit) return undefined;
+  static async downloadController(controllerGit: string): Promise<boolean> {
     const docker = new Dockerode();
     const keyStream = new Writable();
     keyStream._write = (chunk: Buffer) =>
-      keyStream.emit('newKey', chunk.toString());
+      keyStream.emit('data', chunk.toString());
 
-    await docker.run('controllerdl', [], keyStream, {
-      Env: [`GIT_URL=${configuration.controllerGit}`],
+
+    await Promise.all([docker.run('controllerdl', [], keyStream, {
+      Env: [`GIT_URL=${controllerGit}`],
       HostConfig: {
-        Binds: [
-          `${resolve(`${__dirname}/../../Controller/`)}:/Controller`,
-        ],
+        Binds: [`${resolve(`${__dirname}/../../Controller/`)}:/Controller`],
       },
-    });
+    }), pEvent<string, string>(keyStream, 'data')])
+    await timeout(2500)
+    return true;
   }
 
   static async getController(
     params?: InitControllerParams,
   ): Promise<ControllerContext | undefined> {
-    const configuration = await Configuration.findOne({ id: 1 });
-
-    if (!configuration || !configuration.controllerGit) return undefined;
-
-    const activeController = await Controller.findOne({
-      id: configuration.activeControllerId,
+     const activeController = await Controller.findOne({
+      where: { active: true },
     });
     if (!activeController) return undefined;
     const controller = extractController(activeController.path);
@@ -97,9 +97,8 @@ export class Controller extends BaseEntity {
     let controllerModule: ControllerModule = {};
 
     // @ts-ignore
-    for (const method of Object.keys(ControllerMethodENUM))
-      // @ts-ignore
-      controllerModule[method] = loadMethod(method, ControllerClass);
+    // prettier-ignore    
+    for (const method of Object.keys(ControllerMethodENUM)) controllerModule[method] = loadMethod(method, ControllerClass);
 
     if (params) await controllerModule.initController(params);
 

@@ -13,9 +13,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
+    "baseUrl": ".",
     "paths": {
-      "API/*": ["./src/*"],
-      "Controllers/*": ["API/Controller/*"]
+      "API/*": ["./src/*"]
     },
     "outDir": "./dist",
     "typeRoots": ["./node_modules/@types", "./types"]

@@ -7,10 +7,13 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToMany,
+  JoinColumn
 } from 'typeorm';
-import { NodeOS } from '../Nodes/NodeOS';
 import { User } from 'API/Modules/User/UserModel';
+import { NodeOS } from 'API/Controller/types';
+import { NodeRequestENVConfig } from './NodeRequestENVModel';
 
 enum NodeRequestState {
   SUBMITTED = 'Submitted',
@@ -63,4 +66,8 @@ export class NodeRequest extends BaseEntity {
     default: NodeRequestState.SUBMITTED,
   })
   state: NodeRequestState;
+
+  @OneToMany(() => NodeRequestENVConfig, (config) => config.request)
+  @JoinColumn()
+  config: NodeRequestENVConfig[]
 }

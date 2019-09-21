@@ -4,10 +4,12 @@ import { BaseButton } from 'UI/Components/Style/Buttons/BaseButton';
 
 interface Base64InputProps {
   onChange: (value: string) => any;
+  label: string
 }
 
 export function Base64Input({
   onChange,
+  label
 }: Base64InputProps): React.ReactElement {
   const fileInput = useRef<HTMLInputElement>(null);
   const clickInput = useCallback(
@@ -46,7 +48,7 @@ export function Base64Input({
         fullWidth
         color='primary'
         variant='outlined'
-        label='Upload Configuration File'
+        label={label}
         onClick={clickInput}
       />
     </>

@@ -14,7 +14,4 @@ export class ConfigurationInput {
 export class SaveConfigurationInput {
   @Field()
   controllerHost: string
-
-  @Field()
-  controllerGit: string
 }

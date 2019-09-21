@@ -31,7 +31,7 @@ export const AppRoutes: AppRoute[] = [
     path: 'NewNode',
     to: '/NewNode',
     role: 'USER',
-    Loadable: Loadable(import('UI/Routes/Node/index'), 'Routes/Node/index.tsx')
+    Loadable: Loadable(import('UI/Routes/Node/Request'), 'Routes/Node/Request.tsx')
   },
   {
     label: 'Nodes',

@@ -6,10 +6,10 @@ import { CreateCoreTemplateInput } from './CreateCoreTemplateInput';
 
 @Resolver(() => CoreTemplate)
 export class CoreTemplateResolver {
-  @Query((returns) => [CoreTemplate])
   @Authorized()
-  public async coreTemplates(): Promise<CoreTemplate[]> {
-    return CoreTemplate.find();
+  @Query((returns) => [CoreTemplate])
+  public async coreTemplates(@Ctx() { controller: { record } }: AuthContext): Promise<CoreTemplate[]> {
+    return CoreTemplate.find({ where: { controllerId: record.id } });
   }
 
   @Authorized(['Admin'])

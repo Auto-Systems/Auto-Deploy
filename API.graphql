@@ -18,7 +18,6 @@ type AuthOutput {
 type Configuration {
   id: ID!
   createdAt: DateTime!
-  controllerGit: String
   controllerHost: String
 }
 
@@ -30,6 +29,7 @@ input ConfigurationInput {
 type Controller {
   id: ID!
   createdAt: DateTime!
+  active: Boolean!
   name: String!
 }
 
@@ -50,6 +50,7 @@ type CoreTemplate {
 input CreateCoreTemplateInput {
   itemID: String!
   name: String!
+  os: NodeOS!
   nodeAuth: NodeAuthInput!
 }
 
@@ -85,7 +86,13 @@ type Host implements CoreNode {
 input InitialConfigurationInput {
   username: String!
   controllerConnection: String!
-  activeControllerId: Float!
+  initialControllerGit: String!
+  initialProvisionerGit: String!
+}
+
+type InitialModule {
+  name: String!
+  git: String!
 }
 
 input LCENV {
@@ -146,6 +153,7 @@ type Mutation {
   initialConfiguration(input: InitialConfigurationInput!): Boolean!
   addUser(username: String!): Boolean!
   saveConfiguration(input: SaveConfigurationInput!): Configuration!
+  downloadController(git: String!): Boolean!
   createCoreTemplate(input: CreateCoreTemplateInput!): CoreTemplate!
   createNode(input: CreateNodeInput!): ManagedNode!
   approveNodeRequest(input: ApproveNodeRequestInput!, requestId: String!): ManagedNode!
@@ -211,13 +219,15 @@ enum NodeRequestState {
 type Provisioner {
   id: ID!
   createdAt: DateTime!
+  active: Boolean!
   name: String!
 }
 
 type Query {
   userCheck: UserCheck!
   configuration: Configuration!
-  getControllers: Controller!
+  getInitialControllers: [InitialModule!]!
+  getIntialProvisioners: [InitialModule!]!
   getSetupCompleted(secret: String!): Boolean!
   controllers: [Controller!]!
   coreTemplates: [CoreTemplate!]!
@@ -238,7 +248,6 @@ type Query {
 
 input SaveConfigurationInput {
   controllerHost: String!
-  controllerGit: String!
 }
 
 type Storage implements CoreNode {
@@ -251,6 +260,7 @@ input SubmitNodeRequestInput {
   os: NodeOS!
   purpose: String!
   configurationFile: String
+  env: [ENV!]
 }
 
 type User {

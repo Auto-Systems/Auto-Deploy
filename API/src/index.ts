@@ -7,12 +7,10 @@ import { generateGQLSchema } from 'API/Library/generateGQLSchema'
 import { ensureDbConnection } from 'API/Library/getDbConnection'
 import { getContext } from 'API/Context'
 import { config } from 'API/config'
-import { createInstalledControllers } from './Library/getControllers'
-import { createInstalledProvisioners } from './Library/getProvisioner'
 
 export async function startAPI(): Promise<void> {
   try {
-    const dbConnProm = ensureDbConnection()
+    await ensureDbConnection()
     const server = new Koa()
     const serverRouter = new KoaRouter()
 
@@ -27,8 +25,6 @@ export async function startAPI(): Promise<void> {
     apiServer.applyMiddleware({ app: server })
     
     await server.listen(config.port)
-    await dbConnProm
-    await Promise.all([createInstalledControllers(), createInstalledProvisioners()])
     console.log(`API is listening on`)
     // Uncomment if Subscriptions are needed
     // apiServer.installSubscriptionHandlers(httpServer)

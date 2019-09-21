@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
 export function NodeRequestCard({
   name,
   purpose,
-}: NodeRequest): React.ReactElement {
-  const [approveNodeRequestFN] = useApproveNodeRequestMutation();
+  approveRequest
+}: NodeRequest & { approveRequest: (nodeId: string) => void }): React.ReactElement {
   const classes = useStyles({});
 
   return (
@@ -69,6 +69,7 @@ export function NodeRequestCard({
             size='medium'
             aria-label='add'
             className={classes.approveButton}
+            onClick={approveRequest}
           >
             <ApproveButton
               fontSize='default'

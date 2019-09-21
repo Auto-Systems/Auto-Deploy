@@ -1,10 +1,10 @@
 // API/src/Configuration/parseConfigurationFile.ts
 import { parse } from 'yaml';
 import pEvent from 'p-event';
-import { getActiveProvisioner } from 'API/Modules/Provisioners/getActiveProvisioner';
 import { Field, InputType } from 'type-graphql';
 import { verify } from 'jsonwebtoken';
 import { config } from 'API/config';
+import { Provisioner } from 'API/Modules/Provisioners/ProvisionerModel';
 
 @InputType()
 export class ENV {
@@ -77,10 +77,13 @@ export async function processCopyFiles(
   { sourceHost, destHost }: HostArgs,
   copy: CopyFiles,
 ): Promise<void> {
-  const [SourceProvision, DestProvision] = await Promise.all([
-    getActiveProvisioner(),
-    getActiveProvisioner(),
+  const [prov1, prov2] = await Promise.all([
+    Provisioner.getProvisioner(),
+    Provisioner.getProvisioner(),
   ]);
+  if (!prov1 || !prov2) throw new Error();
+  const { provisioner: SourceProvision } = prov1;
+  const { provisioner: DestProvision } = prov2;
 
   await Promise.all([SourceProvision.loadKeys(), DestProvision.loadKeys()]);
 
@@ -105,7 +108,9 @@ export async function processCopyDirs(
   { sourceHost, destHost }: HostArgs,
   copy: CopyDirs,
 ): Promise<void[]> {
-  const SourceProvision = await getActiveProvisioner();
+  const prov = await Provisioner.getProvisioner();
+  if (!prov) throw new Error();
+  const { provisioner: SourceProvision } = prov;
   await SourceProvision.loadKeys();
 
   await SourceProvision.initProvisioner(sourceHost);
@@ -127,7 +132,9 @@ export async function processInstall(
   host: string,
   pkgs: string[],
 ): Promise<string> {
-  const Provision = await getActiveProvisioner();
+  const prov = await Provisioner.getProvisioner();
+  if (!prov) throw new Error();
+  const { provisioner: Provision } = prov;
   await Provision.loadKeys();
 
   await Provision.initProvisioner(host);
@@ -151,7 +158,9 @@ export async function processEXEC(
   cmds: string[],
   secrets?: ENV[],
 ): Promise<string> {
-  const Provision = await getActiveProvisioner();
+  const prov = await Provisioner.getProvisioner();
+  if (!prov) throw new Error();
+  const { provisioner: Provision } = prov;
 
   await Provision.loadKeys();
 

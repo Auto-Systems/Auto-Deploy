@@ -1,7 +1,5 @@
 mutation SaveConfiguration($input: SaveConfigurationInput!) {
   saveConfiguration(input: $input) {
     id
-    controllerHost
-    controllerGit
   }
 }

@@ -1,7 +1,5 @@
 query Configuration {
   configuration {
     id
-    controllerHost
-    controllerGit
   }
 }

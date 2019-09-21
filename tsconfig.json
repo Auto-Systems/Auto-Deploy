@@ -10,7 +10,9 @@
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-
+    "paths": {
+      "API/*": ["API/src/*"]
+    },
     "esModuleInterop": true
   }
 }

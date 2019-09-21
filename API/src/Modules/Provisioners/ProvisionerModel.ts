@@ -9,13 +9,18 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ProvisionerContext } from 'API/Context';
-import { Configuration } from '../Configurations/ConfigurationModel';
-import { parse } from 'path';
-import { pathExists } from 'fs-extra';
-import { run } from 'API/Library/run';
 import { extractProvisioner } from './getActiveProvisioner';
-import { ProvisionerModule, ProvisionerMethodENUM } from 'API/Provisioner/types';
+import {
+  ProvisionerModule,
+  ProvisionerMethodENUM,
+} from 'API/Provisioner/types';
 import { loadMethod } from 'API/Provisioner/Decorators/MethodDecorator';
+import { Writable } from 'stream';
+import Dockerode from 'dockerode';
+import { resolve } from 'path';
+import pEvent from 'p-event';
+
+const timeout = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
 @ObjectType()
 @Entity()
@@ -32,29 +37,38 @@ export class Provisioner extends BaseEntity {
   readonly updatedAt: Date;
 
   @Field()
-  @Column('text')
+  @Column('bool', { unique: true })
+  active: boolean;
+
+  @Field()
+  @Column('varchar')
   name: string;
 
-  @Column('text', { unique: true })
+  @Column('varchar', { unique: true })
   path: string;
 
+  static async downloadProvisioner(provisionerGit: string): Promise<boolean> {
+    const docker = new Dockerode();
+    const keyStream = new Writable();
+    keyStream._write = (chunk: Buffer) =>
+      keyStream.emit('data', chunk.toString());
+
+
+    await Promise.all([docker.run('controllerdl', [], keyStream, {
+      Env: [`GIT_URL=${provisionerGit}`],
+      HostConfig: {
+        Binds: [`${resolve(`${__dirname}/../../Provisioner/`)}:/Controller`],
+      },
+    }), pEvent<string, string>(keyStream, 'data') ])
+    await timeout(2500)
+    return true;
+  }
+
   static async getProvisioner(): Promise<ProvisionerContext | undefined> {
-    const configuration = await Configuration.findOne({ id: 1 });
-
-    if (!configuration || !configuration.activeProvisionerId) return undefined;
-
     const activeProvisioner = await Provisioner.findOne({
-      id: configuration.activeControllerId,
+      where: { enabled: true },
     });
     if (!activeProvisioner) return undefined;
-
-    const { dir } = parse(activeProvisioner.path);
-    const [provisionerPKGJSON, provisionerModules] = await Promise.all([
-      pathExists(`${dir}/package.json`),
-      pathExists(`${dir}/node_modules`),
-    ]);
-    if (provisionerPKGJSON && !provisionerModules)
-      await run('npm install', { cwd: dir });
 
     const provisioner = extractProvisioner(activeProvisioner.path);
     if (!provisioner) return undefined;
@@ -63,10 +77,11 @@ export class Provisioner extends BaseEntity {
 
     // @ts-ignore
     let provisionerModule: ProvisionerModule = {};
-  
+
     // @ts-ignore
+    // prettier-ignore
     for (const method of Object.keys(ProvisionerMethodENUM)) provisionerModule[method] = loadMethod(method, ProvisionerClass);
-  
+
     return { provisioner: provisionerModule, record: activeProvisioner };
   }
 }

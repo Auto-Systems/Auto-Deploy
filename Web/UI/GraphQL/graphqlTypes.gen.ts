@@ -27,7 +27,6 @@ export type Configuration = {
    __typename?: 'Configuration',
   id: Scalars['ID'],
   createdAt: Scalars['DateTime'],
-  controllerGit?: Maybe<Scalars['String']>,
   controllerHost?: Maybe<Scalars['String']>,
 };
 
@@ -40,6 +39,7 @@ export type Controller = {
    __typename?: 'Controller',
   id: Scalars['ID'],
   createdAt: Scalars['DateTime'],
+  active: Scalars['Boolean'],
   name: Scalars['String'],
 };
 
@@ -61,6 +61,7 @@ export type CoreTemplate = {
 export type CreateCoreTemplateInput = {
   itemID: Scalars['String'],
   name: Scalars['String'],
+  os: NodeOs,
   nodeAuth: NodeAuthInput,
 };
 
@@ -93,7 +94,14 @@ export type Host = CoreNode & {
 export type InitialConfigurationInput = {
   username: Scalars['String'],
   controllerConnection: Scalars['String'],
-  activeControllerId: Scalars['Float'],
+  initialControllerGit: Scalars['String'],
+  initialProvisionerGit: Scalars['String'],
+};
+
+export type InitialModule = {
+   __typename?: 'InitialModule',
+  name: Scalars['String'],
+  git: Scalars['String'],
 };
 
 export type Lcenv = {
@@ -163,6 +171,7 @@ export type Mutation = {
   initialConfiguration: Scalars['Boolean'],
   addUser: Scalars['Boolean'],
   saveConfiguration: Configuration,
+  downloadController: Scalars['Boolean'],
   createCoreTemplate: CoreTemplate,
   createNode: ManagedNode,
   approveNodeRequest: ManagedNode,
@@ -193,6 +202,11 @@ export type MutationAddUserArgs = {
 
 export type MutationSaveConfigurationArgs = {
   input: SaveConfigurationInput
+};
+
+
+export type MutationDownloadControllerArgs = {
+  git: Scalars['String']
 };
 
 
@@ -302,6 +316,7 @@ export type Provisioner = {
    __typename?: 'Provisioner',
   id: Scalars['ID'],
   createdAt: Scalars['DateTime'],
+  active: Scalars['Boolean'],
   name: Scalars['String'],
 };
 
@@ -309,7 +324,8 @@ export type Query = {
    __typename?: 'Query',
   userCheck: UserCheck,
   configuration: Configuration,
-  getControllers: Controller,
+  getInitialControllers: Array<InitialModule>,
+  getIntialProvisioners: Array<InitialModule>,
   getSetupCompleted: Scalars['Boolean'],
   controllers: Array<Controller>,
   coreTemplates: Array<CoreTemplate>,
@@ -349,7 +365,6 @@ export type QueryTestConfigArgs = {
 
 export type SaveConfigurationInput = {
   controllerHost: Scalars['String'],
-  controllerGit: Scalars['String'],
 };
 
 export type Storage = CoreNode & {
@@ -363,6 +378,7 @@ export type SubmitNodeRequestInput = {
   os: NodeOs,
   purpose: Scalars['String'],
   configurationFile?: Maybe<Scalars['String']>,
+  env?: Maybe<Array<Env>>,
 };
 
 export type User = {
@@ -390,7 +406,7 @@ export type ConfigurationQuery = (
   { __typename?: 'Query' }
   & { configuration: (
     { __typename?: 'Configuration' }
-    & Pick<Configuration, 'id' | 'controllerHost' | 'controllerGit'>
+    & Pick<Configuration, 'id'>
   ) }
 );
 
@@ -403,7 +419,7 @@ export type SaveConfigurationMutation = (
   { __typename?: 'Mutation' }
   & { saveConfiguration: (
     { __typename?: 'Configuration' }
-    & Pick<Configuration, 'id' | 'controllerHost' | 'controllerGit'>
+    & Pick<Configuration, 'id'>
   ) }
 );
 
@@ -444,6 +460,53 @@ export type ApproveNodeRequestMutation = (
     { __typename?: 'ManagedNode' }
     & Pick<ManagedNode, 'name' | 'id'>
   ) }
+);
+
+export type ApproveRequestMutationVariables = {
+  input: ApproveNodeRequestInput,
+  requestId: Scalars['String']
+};
+
+
+export type ApproveRequestMutation = (
+  { __typename?: 'Mutation' }
+  & { approveNodeRequest: (
+    { __typename?: 'ManagedNode' }
+    & Pick<ManagedNode, 'name'>
+  ) }
+);
+
+export type HostsQueryVariables = {};
+
+
+export type HostsQuery = (
+  { __typename?: 'Query' }
+  & { hosts: Array<(
+    { __typename?: 'Host' }
+    & Pick<Host, 'name' | 'id'>
+  )> }
+);
+
+export type NetworksQueryVariables = {};
+
+
+export type NetworksQuery = (
+  { __typename?: 'Query' }
+  & { networks: Array<(
+    { __typename?: 'Network' }
+    & Pick<Network, 'name' | 'id'>
+  )> }
+);
+
+export type StoragesQueryVariables = {};
+
+
+export type StoragesQuery = (
+  { __typename?: 'Query' }
+  & { storages: Array<(
+    { __typename?: 'Storage' }
+    & Pick<Storage, 'name' | 'id'>
+  )> }
 );
 
 export type UserCheckQueryVariables = {};

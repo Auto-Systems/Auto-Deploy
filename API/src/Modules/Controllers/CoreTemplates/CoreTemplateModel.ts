@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { Controller } from '../ControllerModel';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
-import { NodeOS } from '../Nodes/NodeOS';
+import { NodeOS } from 'API/Controller/types';
 
 @ObjectType()
 export class NodeAuth {
@@ -62,4 +62,8 @@ export class CoreTemplate extends BaseEntity {
   @Field()
   @Column('text')
   itemID: string
+
+  static async getOSCoreTemplate(os: NodeOS): Promise<CoreTemplate | undefined> {
+    return this.findOne({ where: { os } })
+  }
 }
