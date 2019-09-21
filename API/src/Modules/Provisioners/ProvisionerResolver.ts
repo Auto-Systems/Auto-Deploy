@@ -87,7 +87,7 @@ export class ProvisionerResolver {
       await processInstall(network.host, configuration.install);
 
     if (configuration.exec && configuration.exec.length > 0)
-      await processEXEC(network.host, configuration.exec, env);
+      await processEXEC(network.host, configuration.exec, manNode.id, env);
 
     return configFile.toString();
   }

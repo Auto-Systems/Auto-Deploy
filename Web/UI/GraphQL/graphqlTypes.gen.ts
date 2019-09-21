@@ -71,14 +71,6 @@ export type CreateLifecycleInput = {
   file: Scalars['String'],
 };
 
-export type CreateNodeInput = {
-  name: Scalars['String'],
-  network: Scalars['String'],
-  host: Scalars['String'],
-  storage: Scalars['String'],
-  coreTemplate: Scalars['Float'],
-};
-
 
 export type Env = {
   key: Scalars['String'],
@@ -149,6 +141,14 @@ export type Lifecycle = {
   node: ManagedNode,
 };
 
+export type Log = {
+   __typename?: 'Log',
+  id: Scalars['ID'],
+  createdAt: Scalars['DateTime'],
+  command: Scalars['String'],
+  result: Scalars['String'],
+};
+
 export type LoginInput = {
   username: Scalars['String'],
   password: Scalars['String'],
@@ -162,7 +162,7 @@ export type ManagedNode = {
   coreTemplate: CoreTemplate,
   /** Controller's Node ID */
   node: Scalars['String'],
-  helloWorld: Scalars['String'],
+  logs: Array<Log>,
 };
 
 export type Mutation = {
@@ -173,7 +173,6 @@ export type Mutation = {
   saveConfiguration: Configuration,
   downloadController: Scalars['Boolean'],
   createCoreTemplate: CoreTemplate,
-  createNode: ManagedNode,
   approveNodeRequest: ManagedNode,
   getMyNodeRequests: Array<NodeRequest>,
   submitNodeRequest: NodeRequest,
@@ -212,11 +211,6 @@ export type MutationDownloadControllerArgs = {
 
 export type MutationCreateCoreTemplateArgs = {
   input: CreateCoreTemplateInput
-};
-
-
-export type MutationCreateNodeArgs = {
-  input: CreateNodeInput
 };
 
 
@@ -300,7 +294,7 @@ export type NodeRequest = {
   createdAt: Scalars['DateTime'],
   name: Scalars['String'],
   user: User,
-  os: NodeOs,
+  coreTemplate: CoreTemplate,
   purpose: Scalars['String'],
   configurationFile?: Maybe<Scalars['String']>,
   state: NodeRequestState,
@@ -332,8 +326,10 @@ export type Query = {
   hosts: Array<Host>,
   libraries: Array<Library>,
   libraryItem: LibraryItem,
+  libraryItems: Array<LibraryItem>,
   getAllManagedNodes: Array<ManagedNode>,
   managedNodes: Array<ManagedNode>,
+  managedNode: ManagedNode,
   nodeRequests: Array<NodeRequest>,
   networks: Array<Network>,
   /** Returns nodes from active controller module */
@@ -351,6 +347,11 @@ export type QueryGetSetupCompletedArgs = {
 
 export type QueryLibraryItemArgs = {
   id: Scalars['String']
+};
+
+
+export type QueryManagedNodeArgs = {
+  nodeId: Scalars['String']
 };
 
 
@@ -375,7 +376,7 @@ export type Storage = CoreNode & {
 
 export type SubmitNodeRequestInput = {
   name: Scalars['String'],
-  os: NodeOs,
+  coreTemplateId: Scalars['String'],
   purpose: Scalars['String'],
   configurationFile?: Maybe<Scalars['String']>,
   env?: Maybe<Array<Env>>,
@@ -435,6 +436,41 @@ export type NodeRequestsQuery = (
       { __typename?: 'User' }
       & Pick<User, 'username'>
     ) }
+  )> }
+);
+
+export type CoreTemplatesQueryVariables = {};
+
+
+export type CoreTemplatesQuery = (
+  { __typename?: 'Query' }
+  & { coreTemplates: Array<(
+    { __typename?: 'CoreTemplate' }
+    & Pick<CoreTemplate, 'name' | 'id' | 'os'>
+  )> }
+);
+
+export type CreateCoreTemplateMutationVariables = {
+  input: CreateCoreTemplateInput
+};
+
+
+export type CreateCoreTemplateMutation = (
+  { __typename?: 'Mutation' }
+  & { createCoreTemplate: (
+    { __typename?: 'CoreTemplate' }
+    & Pick<CoreTemplate, 'name'>
+  ) }
+);
+
+export type LibraryItemsQueryVariables = {};
+
+
+export type LibraryItemsQuery = (
+  { __typename?: 'Query' }
+  & { libraryItems: Array<(
+    { __typename?: 'LibraryItem' }
+    & { label: LibraryItem['name'], value: LibraryItem['id'] }
   )> }
 );
 
@@ -509,6 +545,34 @@ export type StoragesQuery = (
   )> }
 );
 
+export type ManagedNodeQueryVariables = {
+  nodeId: Scalars['String']
+};
+
+
+export type ManagedNodeQuery = (
+  { __typename?: 'Query' }
+  & { managedNode: (
+    { __typename?: 'ManagedNode' }
+    & Pick<ManagedNode, 'name' | 'id'>
+    & { logs: Array<(
+      { __typename?: 'Log' }
+      & Pick<Log, 'command' | 'result'>
+    )> }
+  ) }
+);
+
+export type ManagedNodesQueryVariables = {};
+
+
+export type ManagedNodesQuery = (
+  { __typename?: 'Query' }
+  & { managedNodes: Array<(
+    { __typename?: 'ManagedNode' }
+    & Pick<ManagedNode, 'name' | 'id'>
+  )> }
+);
+
 export type UserCheckQueryVariables = {};
 
 
@@ -531,17 +595,6 @@ export type LoginMutation = (
     { __typename?: 'AuthOutput' }
     & Pick<AuthOutput, 'success' | 'token' | 'role'>
   ) }
-);
-
-export type ManagedNodesQueryVariables = {};
-
-
-export type ManagedNodesQuery = (
-  { __typename?: 'Query' }
-  & { managedNodes: Array<(
-    { __typename?: 'ManagedNode' }
-    & Pick<ManagedNode, 'name'>
-  )> }
 );
 
 export type RequestNewNodeMutationVariables = {

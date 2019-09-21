@@ -13,6 +13,7 @@ import {
 import { Controller } from '../ControllerModel';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
 import { NodeOS } from 'API/Controller/types';
+import { NodeRequest } from '../ManagedNodes/NodeRequestModel';
 
 @ObjectType()
 export class NodeAuth {
@@ -54,6 +55,9 @@ export class CoreTemplate extends BaseEntity {
 
   @OneToMany(() => ManagedNode, (managedNode) => managedNode.coreTemplate)
   managedNodes: ManagedNode[]
+
+  @OneToMany(() => NodeRequest, (nodeRequest) => nodeRequest.coreTemplate)
+  nodeRequests: NodeRequest[]
 
   @Field(() => NodeAuth)
   @Column(() => NodeAuth)

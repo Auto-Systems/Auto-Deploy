@@ -1,0 +1,10 @@
+query ManagedNode($nodeId: String!) {
+  managedNode(nodeId: $nodeId) {
+    name
+    id
+    logs {
+      command
+      result
+    }
+  }
+}

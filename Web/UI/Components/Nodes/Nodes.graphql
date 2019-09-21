@@ -1,5 +1,6 @@
 query ManagedNodes {
   managedNodes {
     name
+    id
   }
 }

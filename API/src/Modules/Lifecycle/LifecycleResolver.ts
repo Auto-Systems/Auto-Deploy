@@ -168,6 +168,7 @@ export class LifecycleResolver {
       await processEXEC(
         result.network.host,
         configuration.exec,
+        newNode.id,
         decodeENV(lifecycle.config),
       );
 

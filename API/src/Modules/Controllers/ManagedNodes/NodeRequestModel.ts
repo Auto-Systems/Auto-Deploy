@@ -12,8 +12,8 @@ import {
   JoinColumn
 } from 'typeorm';
 import { User } from 'API/Modules/User/UserModel';
-import { NodeOS } from 'API/Controller/types';
 import { NodeRequestENVConfig } from './NodeRequestENVModel';
+import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
 
 enum NodeRequestState {
   SUBMITTED = 'Submitted',
@@ -47,9 +47,11 @@ export class NodeRequest extends BaseEntity {
   @Column()
   userId: number
 
-  @Field(() => NodeOS)
-  @Column({ enum: NodeOS })
-  os: NodeOS;
+  @Field(() => CoreTemplate)
+  @ManyToOne(() => CoreTemplate, )
+  coreTemplate: CoreTemplate;
+  @Column()
+  coreTemplateId: string
 
   @Field()
   @Column('text')

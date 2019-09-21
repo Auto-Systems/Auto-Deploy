@@ -17,7 +17,7 @@ export class NodeResolver {
   }: AuthContext): Promise<Node[]> {
     return controller.listNodes();
   }
-  
+
   @Authorized()
   @Query(() => Boolean)
   async testNodeStuff(@Arg('nodeId') nodeId: string, @Ctx() { controller: { controller } }: AuthContext): Promise<boolean> {

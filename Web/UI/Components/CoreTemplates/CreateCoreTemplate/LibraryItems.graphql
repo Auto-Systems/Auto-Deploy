@@ -1,0 +1,6 @@
+query LibraryItems {
+  libraryItems {
+  	label: name
+    value: id
+  }
+}

@@ -1,5 +1,5 @@
 // API/src/Modules/Controllers/ManagedNodes/ManagedNodesModel.ts
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, ObjectType, ForbiddenError } from 'type-graphql';
 import {
   BaseEntity,
   Column,
@@ -10,12 +10,17 @@ import {
   ManyToOne,
   JoinColumn,
   OneToOne,
-  OneToMany
+  OneToMany,
 } from 'typeorm';
 import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
 import { Controller } from '../ControllerModel';
 import { Lifecycle } from 'API/Modules/Lifecycle/LifecycleModel';
-import { ManagedNodePermission } from './ManagedNodePermissionModel';
+import {
+  ManagedNodePermission,
+  UserPermission,
+} from './ManagedNodePermissionModel';
+import { User } from 'API/Modules/User/UserModel';
+import { Log } from '../Logging/LogModel';
 
 @ObjectType()
 @Entity()
@@ -39,30 +44,55 @@ export class ManagedNode extends BaseEntity {
   @ManyToOne(() => CoreTemplate, (coreTemplate) => coreTemplate.managedNodes)
   readonly coreTemplate: CoreTemplate;
   @Column()
-  coreTemplateId: number
+  coreTemplateId: number;
 
   @Field({ description: `Controller's Node ID` })
   @Column('text')
-  node: string
+  node: string;
 
   @Column('text')
-  network: string
+  network: string;
 
   @Column('text')
-  storage: string
+  storage: string;
 
   @Column('text')
-  host: string
+  host: string;
 
   @ManyToOne(() => Controller, (controller) => controller.managedNodes)
   @JoinColumn()
-  readonly controller: Controller
+  readonly controller: Controller;
   @Column()
-  controllerId: number
+  controllerId: number;
 
   @OneToOne(() => Lifecycle, (lifecycle) => lifecycle.node)
   lifecycle: Lifecycle;
 
-  @OneToMany(() => ManagedNodePermission, (nodePermission) => nodePermission.managedNode)
-  nodePermissions: ManagedNodePermission[]
+  @OneToMany(
+    () => ManagedNodePermission,
+    (nodePermission) => nodePermission.managedNode,
+    { lazy: true },
+  )
+  nodePermissions: ManagedNodePermission[];
+
+  @Field(() => [Log])
+  @OneToMany(() => Log, (log) => log.managedNode, {  lazy: true })
+  @JoinColumn()
+  logs: Log[]
+
+  async getUserPermission(
+    user: User,
+  ): Promise<ManagedNodePermission | undefined> {
+    const permissions = await this.nodePermissions;
+    return permissions.find((userPerms) => userPerms.userId === user.id);
+  }
+
+  async getUserPermitted(
+    user: User,
+    permission: UserPermission,
+  ): Promise<ManagedNode> {
+    const permissions = await this.getUserPermission(user);
+    if (!permissions || !permissions.userPermission.includes(permission)) throw new ForbiddenError();
+    return this
+  }
 }

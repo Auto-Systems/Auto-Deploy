@@ -26,6 +26,33 @@ declare module '*/NodeRequests.graphql' {
 }
     
 
+declare module '*/CoreTemplates.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const CoreTemplates: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
+declare module '*/CreateCoreTemplate.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const CreateCoreTemplate: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
+declare module '*/LibraryItems.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const LibraryItems: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
 declare module '*/saveInitialSettings.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
@@ -72,6 +99,24 @@ declare module '*/Storages.graphql' {
 }
     
 
+declare module '*/Node.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const ManagedNode: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
+declare module '*/Nodes.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const ManagedNodes: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
 declare module '*/isAuthed.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
@@ -85,15 +130,6 @@ declare module '*/login.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
   export const login: DocumentNode;
-
-  export default defaultDocument;
-}
-    
-
-declare module '*/ManagedNodes.graphql' {
-  import { DocumentNode } from 'graphql';
-  const defaultDocument: DocumentNode;
-  export const ManagedNodes: DocumentNode;
 
   export default defaultDocument;
 }

@@ -5,6 +5,8 @@ import { Field, InputType } from 'type-graphql';
 import { verify } from 'jsonwebtoken';
 import { config } from 'API/config';
 import { Provisioner } from 'API/Modules/Provisioners/ProvisionerModel';
+import { ProvisionerModule } from 'API/Provisioner/types';
+import { Log } from 'API/Modules/Controllers/Logging/LogModel';
 
 @InputType()
 export class ENV {
@@ -153,9 +155,21 @@ export function decodeENV(secrets: ENV[]): ENV[] {
   }));
 }
 
+interface RunCommandInput {
+  provisioner: ProvisionerModule;
+  command: string
+  managedNodeId: string
+}
+
+export async function execCommand({ provisioner, command, managedNodeId }: RunCommandInput): Promise<string> {
+  const result = await provisioner.runCommand(command)
+  await Log.create({ command, result, managedNodeId }).save()
+  return result
+}
 export async function processEXEC(
   host: string,
   cmds: string[],
+  managedNodeId: string,
   secrets?: ENV[],
 ): Promise<string> {
   const prov = await Provisioner.getProvisioner();
@@ -175,7 +189,7 @@ export async function processEXEC(
     const cmd = exec.replace(/\$\{(.*)\}/, '${configENVs.$1}');
     const evaledCMD = eval(`\`${cmd}\``);
     console.log(`${evaledCMD}`);
-    results.push(await Provision.runCommand(evaledCMD));
+    results.push(await execCommand({ provisioner: Provision, managedNodeId, command: evaledCMD }));
   }
 
   return 'HelloWorld';

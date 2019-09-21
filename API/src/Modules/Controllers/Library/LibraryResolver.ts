@@ -18,6 +18,14 @@ export class LibraryResolver {
   }
 
   @Authorized()
+  @Query(() => [LibraryItem])
+  async libraryItems(@Ctx() { controller: { controller } }: AuthContext): Promise<LibraryItem[]> {
+    const items: LibraryItem[] = []
+    for (const library of await controller.listLibraries()) items.push(...library.items)
+    return items
+  }
+
+  @Authorized()
   @FieldResolver(() => [LibraryItem])
   public async items(
     @Root() Library: Library,

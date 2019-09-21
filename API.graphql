@@ -60,14 +60,6 @@ input CreateLifecycleInput {
   file: String!
 }
 
-input CreateNodeInput {
-  name: String!
-  network: String!
-  host: String!
-  storage: String!
-  coreTemplate: Float!
-}
-
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -132,6 +124,13 @@ type Lifecycle {
   node: ManagedNode!
 }
 
+type Log {
+  id: ID!
+  createdAt: DateTime!
+  command: String!
+  result: String!
+}
+
 input LoginInput {
   username: String!
   password: String!
@@ -145,7 +144,7 @@ type ManagedNode {
 
   """Controller's Node ID"""
   node: String!
-  helloWorld: String!
+  logs: [Log!]!
 }
 
 type Mutation {
@@ -155,7 +154,6 @@ type Mutation {
   saveConfiguration(input: SaveConfigurationInput!): Configuration!
   downloadController(git: String!): Boolean!
   createCoreTemplate(input: CreateCoreTemplateInput!): CoreTemplate!
-  createNode(input: CreateNodeInput!): ManagedNode!
   approveNodeRequest(input: ApproveNodeRequestInput!, requestId: String!): ManagedNode!
   getMyNodeRequests: [NodeRequest!]!
   submitNodeRequest(input: SubmitNodeRequestInput!): NodeRequest!
@@ -204,7 +202,7 @@ type NodeRequest {
   createdAt: DateTime!
   name: String!
   user: User!
-  os: NodeOS!
+  coreTemplate: CoreTemplate!
   purpose: String!
   configurationFile: String
   state: NodeRequestState!
@@ -234,8 +232,10 @@ type Query {
   hosts: [Host!]!
   libraries: [Library!]!
   libraryItem(id: String!): LibraryItem!
+  libraryItems: [LibraryItem!]!
   getAllManagedNodes: [ManagedNode!]!
   managedNodes: [ManagedNode!]!
+  managedNode(nodeId: String!): ManagedNode!
   nodeRequests: [NodeRequest!]!
   networks: [Network!]!
 
@@ -257,7 +257,7 @@ type Storage implements CoreNode {
 
 input SubmitNodeRequestInput {
   name: String!
-  os: NodeOS!
+  coreTemplateId: String!
   purpose: String!
   configurationFile: String
   env: [ENV!]

@@ -5,16 +5,17 @@ import { BaseListItem, BaseListItemProps } from 'UI/Components/Style/Lists/ListI
 
 export interface LabelListItemProps extends BaseListItemProps {
   label: string;
+  secondary?: string;
   preLabel?: React.ReactNode;
 }
 
 type LabelListItemType = FunctionComponent<LabelListItemProps>;
 
-export const LabelListItem: LabelListItemType = ({ label, children, preLabel, ...props }) => {
+export const LabelListItem: LabelListItemType = ({ label, children, preLabel, secondary, ...props }) => {
   return (
     <BaseListItem {...props}>
       {preLabel}
-      <ListItemText primary={label} />
+      <ListItemText primary={label} secondary={secondary} />
       {children}
     </BaseListItem>
   );

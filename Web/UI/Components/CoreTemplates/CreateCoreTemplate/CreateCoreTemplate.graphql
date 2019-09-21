@@ -1,0 +1,5 @@
+mutation CreateCoreTemplate($input: CreateCoreTemplateInput!) {
+  createCoreTemplate(input: $input) {
+    name
+  }
+}
