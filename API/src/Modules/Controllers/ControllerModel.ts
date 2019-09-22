@@ -6,7 +6,6 @@ import {
   ControllerModule,
   InitControllerParams,
 } from 'API/Controller/types';
-import { ControllerPath } from 'API/Library/getControllers';
 import Dockerode from 'dockerode';
 import pEvent from 'p-event';
 import { Writable } from 'stream';
@@ -77,9 +76,10 @@ export class Controller extends BaseEntity {
         [],
         keyStream,
         {
-          Env: [`GIT_URL=${controllerGit}`],
+          Env: [`GIT_URL=${controllerGit}`, `TYPE=Controllers`],
           HostConfig: {
-            Binds: [`${ControllerPath}:/Controller`],
+            VolumesFrom: ['autodeploy'],
+            AutoRemove: true
           },
         },
       ),

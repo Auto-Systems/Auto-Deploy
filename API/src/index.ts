@@ -7,6 +7,7 @@ import { generateGQLSchema } from 'API/Library/generateGQLSchema';
 import { ensureDbConnection } from 'API/Library/getDbConnection';
 import { ApolloServer } from 'apollo-server-koa';
 import Koa from 'koa';
+import { downloadModules } from 'API/Modules/Configurations/Modules/downloadAllModules';
 
 export async function startAPI(): Promise<void> {
   try {
@@ -28,6 +29,7 @@ export async function startAPI(): Promise<void> {
     httpServer.timeout = 10 * 60 * 1000;
     console.log(`API is listening on ${config.port}`);
     await db;
+    await downloadModules();
     // Uncomment if Subscriptions are needed
     // apiServer.installSubscriptionHandlers(httpServer)
   } catch (err) {

@@ -1,6 +1,5 @@
 // API/src/Modules/Provisioners/ProvisionerModel.ts
 import { ProvisionerContext } from 'API/Context';
-import { ProvisionerPath } from 'API/Library/getProvisioner';
 import { loadMethod } from 'API/Provisioner/Decorators/MethodDecorator';
 import {
   ProvisionerMethodENUM,
@@ -60,9 +59,9 @@ export class Provisioner extends BaseEntity {
         [],
         keyStream,
         {
-          Env: [`GIT_URL=${provisionerGit}`],
+          Env: [`GIT_URL=${provisionerGit}`, `TYPE=Provisioners`],
           HostConfig: {
-            Binds: [`${ProvisionerPath}:/Controller`],
+            VolumesFrom: ['autodeploy']
           },
         },
       ),
