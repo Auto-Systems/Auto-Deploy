@@ -1,11 +1,11 @@
+import 'reflect-metadata';
 import {
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   BaseEntity,
-  Entity
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import 'reflect-metadata'
 import { NodeRequest } from './NodeRequestModel';
 
 @Entity()
@@ -17,8 +17,8 @@ export class NodeRequestENVConfig extends BaseEntity {
   request: NodeRequest;
 
   @Column('text')
-  key: string
+  key: string;
 
   @Column('text')
-  value: string
+  value: string;
 }

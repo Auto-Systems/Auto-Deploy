@@ -15,14 +15,14 @@ interface ProvisionNodeInput {
   provisioner: ProvisionerContext;
   type: ProvisionTypes;
   node: string;
-  coreTemplateId: string
+  coreTemplateId: string;
 }
 
 export async function initialProvisionNode({
   controller: { controller, record },
   provisioner: { provisioner },
   node,
-  coreTemplateId
+  coreTemplateId,
 }: ProvisionNodeInput): Promise<any> {
   try {
     await controller.powerNode(node, 'start');

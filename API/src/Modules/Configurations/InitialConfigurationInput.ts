@@ -1,17 +1,17 @@
 // API/src/Modules/Configurations/InitialConfigurationInput.ts
-import { InputType, Field } from 'type-graphql'
+import { Field, InputType } from 'type-graphql';
 
 @InputType()
 export class InitialConfigurationInput {
   @Field()
-  username: string
+  username: string;
 
   @Field()
-  controllerConnection: string
+  controllerConnection: string;
 
   @Field()
-  initialControllerGit: string
+  initialControllerGit: string;
 
   @Field()
-  initialProvisionerGit: string
+  initialProvisionerGit: string;
 }

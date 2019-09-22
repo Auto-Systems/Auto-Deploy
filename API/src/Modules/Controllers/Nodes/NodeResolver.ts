@@ -1,8 +1,15 @@
 // API/src/Modules/Controllers/Nodes/NodeResolver.ts
 import { AuthContext } from 'API/Context';
-import { Authorized, Ctx, Query, Resolver, Arg, ArgumentValidationError } from 'type-graphql';
-import { Node } from './Node';
+import {
+  Arg,
+  ArgumentValidationError,
+  Authorized,
+  Ctx,
+  Query,
+  Resolver,
+} from 'type-graphql';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
+import { Node } from './Node';
 
 @Resolver(() => Node)
 export class NodeResolver {
@@ -20,20 +27,24 @@ export class NodeResolver {
 
   @Authorized()
   @Query(() => Boolean)
-  async testNodeStuff(@Arg('nodeId') nodeId: string, @Ctx() { controller: { controller } }: AuthContext): Promise<boolean> {
-    const [managedNode] = await Promise.all([ManagedNode.findOne(nodeId)])
-    if (!managedNode) throw new ArgumentValidationError([
-      {
-        property: 'nodeId',
-        constraints: {
-          isValid: 'Invalid ManagedNode',
+  async testNodeStuff(
+    @Arg('nodeId') nodeId: string,
+    @Ctx() { controller: { controller } }: AuthContext,
+  ): Promise<boolean> {
+    const [managedNode] = await Promise.all([ManagedNode.findOne(nodeId)]);
+    if (!managedNode)
+      throw new ArgumentValidationError([
+        {
+          property: 'nodeId',
+          constraints: {
+            isValid: 'Invalid ManagedNode',
+          },
+          children: [],
         },
-        children: [],
-      },
-    ]);
-    console.log(managedNode)
-    const nodeInfo = await controller.getNodeInfo(managedNode.node)
-    console.log(nodeInfo)
+      ]);
+    console.log(managedNode);
+    const nodeInfo = await controller.getNodeInfo(managedNode.node);
+    console.log(nodeInfo);
     return true;
   }
 }

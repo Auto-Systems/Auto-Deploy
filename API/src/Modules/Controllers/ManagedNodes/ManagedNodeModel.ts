@@ -1,26 +1,26 @@
 // API/src/Modules/Controllers/ManagedNodes/ManagedNodesModel.ts
-import { Field, ID, ObjectType, ForbiddenError } from 'type-graphql';
+import { Lifecycle } from 'API/Modules/Lifecycle/LifecycleModel';
+import { User } from 'API/Modules/User/UserModel';
+import { Field, ForbiddenError, ID, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn,
-  OneToOne,
-  OneToMany,
 } from 'typeorm';
-import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
 import { Controller } from '../ControllerModel';
-import { Lifecycle } from 'API/Modules/Lifecycle/LifecycleModel';
+import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
+import { Log } from '../Logging/LogModel';
 import {
   ManagedNodePermission,
   UserPermission,
 } from './ManagedNodePermissionModel';
-import { User } from 'API/Modules/User/UserModel';
-import { Log } from '../Logging/LogModel';
 
 @ObjectType()
 @Entity()
@@ -76,9 +76,9 @@ export class ManagedNode extends BaseEntity {
   nodePermissions: ManagedNodePermission[];
 
   @Field(() => [Log])
-  @OneToMany(() => Log, (log) => log.managedNode, {  lazy: true })
+  @OneToMany(() => Log, (log) => log.managedNode, { lazy: true })
   @JoinColumn()
-  logs: Log[]
+  logs: Log[];
 
   async getUserPermission(
     user: User,
@@ -92,7 +92,8 @@ export class ManagedNode extends BaseEntity {
     permission: UserPermission,
   ): Promise<ManagedNode> {
     const permissions = await this.getUserPermission(user);
-    if (!permissions || !permissions.userPermission.includes(permission)) throw new ForbiddenError();
-    return this
+    if (!permissions || !permissions.userPermission.includes(permission))
+      throw new ForbiddenError();
+    return this;
   }
 }

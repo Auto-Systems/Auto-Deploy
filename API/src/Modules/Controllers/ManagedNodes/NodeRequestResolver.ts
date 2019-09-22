@@ -1,15 +1,17 @@
 // API/src/Modules/Controllers/NodeRequests/NodeRequestResolver.ts
-import { Resolver, Query, Mutation, Authorized, Ctx, Arg } from 'type-graphql';
-import { NodeRequest, NodeRequestState } from './NodeRequestModel';
 import { AuthContext } from 'API/Context';
-import { SubmitNodeRequestInput } from './SubmitNodeRequestInput';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { NodeRequestENVConfig } from './NodeRequestENVModel';
+import { NodeRequest, NodeRequestState } from './NodeRequestModel';
+import { SubmitNodeRequestInput } from './SubmitNodeRequestInput';
 
 @Resolver(() => NodeRequest)
 export class NodeRequestResolver {
   @Authorized(['Admin'])
   @Query(() => [NodeRequest])
-  async nodeRequests(@Arg('state', () => NodeRequestState) state: NodeRequestState): Promise<NodeRequest[]> {
+  async nodeRequests(
+    @Arg('state', () => NodeRequestState) state: NodeRequestState,
+  ): Promise<NodeRequest[]> {
     return NodeRequest.find({ state });
   }
 
@@ -27,7 +29,11 @@ export class NodeRequestResolver {
     @Arg('input') { env, ...input }: SubmitNodeRequestInput,
     @Ctx() { currentUser }: AuthContext,
   ): Promise<NodeRequest> {
-    const newRequest = NodeRequest.create({ ...input, userId: currentUser.id, config: [] });
+    const newRequest = NodeRequest.create({
+      ...input,
+      userId: currentUser.id,
+      config: [],
+    });
     if (env)
       for (const { key, value } of env)
         newRequest.config.push(

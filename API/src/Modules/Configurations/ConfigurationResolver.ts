@@ -1,25 +1,25 @@
 // API/src/Modules/Configuration/ConfigurationResolver.ts
-import {
-  Mutation,
-  Resolver,
-  Query,
-  Arg,
-  ForbiddenError,
-  Authorized,
-  FieldResolver,
-  Root,
-  ObjectType,
-  Field,
-} from 'type-graphql';
-import { Configuration } from './ConfigurationModel';
-import { Controller } from '../Controllers/ControllerModel';
-import { InitialConfigurationInput } from './InitialConfigurationInput';
-import { User, UserRole } from '../User/UserModel';
 import { config } from 'API/config';
-import { SaveConfigurationInput } from './ConfigurationInput';
 import { createInstalledControllers } from 'API/Library/getControllers';
-import { Provisioner } from '../Provisioners/ProvisionerModel';
 import { createInstalledProvisioners } from 'API/Library/getProvisioner';
+import {
+  Arg,
+  Authorized,
+  Field,
+  FieldResolver,
+  ForbiddenError,
+  Mutation,
+  ObjectType,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
+import { Controller } from '../Controllers/ControllerModel';
+import { Provisioner } from '../Provisioners/ProvisionerModel';
+import { User, UserRole } from '../User/UserModel';
+import { SaveConfigurationInput } from './ConfigurationInput';
+import { Configuration } from './ConfigurationModel';
+import { InitialConfigurationInput } from './InitialConfigurationInput';
 
 @ObjectType()
 class InitialModule {
@@ -94,8 +94,8 @@ export class ConfigurationResolver {
     ]);
 
     controller.connection = controllerConnection;
-    controller.active = true
-    
+    controller.active = true;
+
     provisioner.active = true;
 
     await Promise.all([

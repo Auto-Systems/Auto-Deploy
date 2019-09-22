@@ -1,9 +1,9 @@
 // API/src/Modules/Configurations/Modules/ModuleResolver.ts
-import { Resolver, Query, Arg, Mutation } from 'type-graphql';
-import { Module, ModuleType, InitialModules } from './ModuleModel';
-import {  InstallModuleInput } from './InstallModuleInput'
 import { Controller } from 'API/Modules/Controllers/ControllerModel';
 import { Provisioner } from 'API/Modules/Provisioners/ProvisionerModel';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { InstallModuleInput } from './InstallModuleInput';
+import { InitialModules, Module, ModuleType } from './ModuleModel';
 
 const initialControllerModules: InitialModules[] = [
   {
@@ -35,16 +35,23 @@ export class ModuleResolver {
   }
 
   @Mutation(() => Module)
-  async installModule(@Arg('input') { type, git, name }: InstallModuleInput): Promise<Module> {
-    let installedModule: Module = Module.create({ name, git, type })
+  async installModule(@Arg('input')
+  {
+    type,
+    git,
+    name,
+  }: InstallModuleInput): Promise<Module> {
+    let installedModule: Module = Module.create({ name, git, type });
+
     switch (type) {
       case ModuleType.CONTROLLER:
-        await Controller.downloadController(git)
-        break
+        await Controller.downloadController(git);
+        break;
       case ModuleType.PROVISIONER:
-        await Provisioner.downloadProvisioner(git)
-        break
+        await Provisioner.downloadProvisioner(git);
+        break;
     }
-    return installedModule.save()
+
+    return installedModule.save();
   }
 }

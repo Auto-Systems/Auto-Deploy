@@ -1,8 +1,8 @@
 // API/src/Modules/Controllers/ControllerNodes/ControllerNodeResolver.ts
-import { Resolver, Query, Arg, Ctx, Authorized } from 'type-graphql';
-import { ControllerNode, ControllerNodeTypes } from './ControllerNode';
 import { AuthContext } from 'API/Context';
+import { Arg, Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
+import { ControllerNode, ControllerNodeTypes } from './ControllerNode';
 
 @Resolver(() => ControllerNode)
 export class ControllerNodeResolver {
@@ -18,9 +18,9 @@ export class ControllerNodeResolver {
       case ControllerNodeTypes.STORAGE:
         return controller.listStorage();
       case ControllerNodeTypes.HOST:
-        return controller.listHosts()
+        return controller.listHosts();
       case ControllerNodeTypes.CORE_TEMPLATE:
-        return CoreTemplate.find()
+        return CoreTemplate.find();
     }
   }
 
@@ -37,9 +37,9 @@ export class ControllerNodeResolver {
       case ControllerNodeTypes.STORAGE:
         return (await controller.listStorage())[0];
       case ControllerNodeTypes.HOST:
-        return (await controller.listHosts())[0]
+        return (await controller.listHosts())[0];
       case ControllerNodeTypes.CORE_TEMPLATE:
-        return CoreTemplate.findOneOrFail(id)
+        return CoreTemplate.findOneOrFail(id);
     }
   }
 }

@@ -5,12 +5,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne,
-  JoinColumn
 } from 'typeorm';
-import { Log } from './LogModel'
+import { Log } from './LogModel';
 
 @ObjectType()
 @Entity()
@@ -32,13 +32,11 @@ export class CommandResult extends BaseEntity {
 
   @Field()
   @Column('text')
-  result: string
+  result: string;
 
   @ManyToOne(() => Log, (log) => log.commandResults)
   @JoinColumn()
-  log: Log
+  log: Log;
   @Column()
-  logId: string
+  logId: string;
 }
-
-

@@ -1,6 +1,6 @@
 // API/src/Modules/Configurations/Modules/Module.ts
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
-import { BaseEntity, Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum ModuleType {
   CONTROLLER = 'controller',
@@ -12,13 +12,13 @@ registerEnumType(ModuleType, { name: 'ModuleType' });
 @ObjectType()
 export class InitialModules {
   @Field()
-  name: string
+  name: string;
 
   @Field(() => ModuleType)
-  type: ModuleType
+  type: ModuleType;
 
   @Field()
-  git: string
+  git: string;
 }
 
 @Entity()

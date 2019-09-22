@@ -1,5 +1,9 @@
 // API/src/Provisioner/Decorators/MethodDecorators.ts
-import { MethodNames, MethodDecoratorConfiguration, ProvisionerModule } from '../types';
+import {
+  MethodDecoratorConfiguration,
+  MethodNames,
+  ProvisionerModule,
+} from '../types';
 
 const methodNames: MethodNames = {
   initProvisioner: 'initProvisioner',
@@ -12,14 +16,19 @@ const methodNames: MethodNames = {
   createReadStream: 'createReadStream',
   listDirectory: 'listDirectory',
   createDirectory: 'createDirectory',
-  lab: 'lab'
+  lab: 'lab',
 };
 // @ts-ignore
-export const loadMethod = <T extends keyof MethodNames>(key: T, controller: ProvisionerModule): ProvisionerModule[T] =>
+export const loadMethod = <T extends keyof MethodNames>(
+  key: T,
+  controller: ProvisionerModule,
+): ProvisionerModule[T] =>
   // @ts-ignore
   controller[methodNames[key] as keyof ProvisionerModule];
 
-export const provisionerMethod = (config: MethodDecoratorConfiguration): MethodDecorator => {
+export const provisionerMethod = (
+  config: MethodDecoratorConfiguration,
+): MethodDecorator => {
   return (target, propertyName, PropertyDescriptor) => {
     methodNames[config.type] = propertyName as string;
   };

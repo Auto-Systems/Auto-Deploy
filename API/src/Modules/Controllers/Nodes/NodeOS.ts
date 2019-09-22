@@ -1,5 +1,5 @@
 // API/src/Modules/Controllers/Nodes/NodeOS.ts
-import { registerEnumType } from 'type-graphql'
-import { NodeOS } from 'API/Controller/types'
+import { NodeOS } from 'API/Controller/types';
+import { registerEnumType } from 'type-graphql';
 
-registerEnumType(NodeOS, { name: 'NodeOS' })
+registerEnumType(NodeOS, { name: 'NodeOS' });

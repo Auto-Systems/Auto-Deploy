@@ -104,9 +104,12 @@ export class Controller extends BaseEntity {
     // @ts-ignore
     let controllerModule: ControllerModule = {};
 
-    for (const [method] of Object.entries(ControllerMethodENUM) as [keyof ControllerModule, any][]) {
+    for (const [method] of Object.entries(ControllerMethodENUM) as [
+      keyof ControllerModule,
+      any,
+    ][]) {
       // @ts-ignore
-      controllerModule[method] = getMethod(method, ControllerClass)
+      controllerModule[method] = getMethod(method, ControllerClass);
     }
 
     if (params) await controllerModule.initController(params);

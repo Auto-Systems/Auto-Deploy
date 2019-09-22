@@ -1,16 +1,15 @@
 // API/src/Modules/Controllers/CoreTemplates/CreateCoreTemplateInput.ts
-import { InputType, Field } from 'type-graphql'
 import { NodeOS } from 'API/Controller/types';
+import { Field, InputType } from 'type-graphql';
 
 @InputType()
-export class  NodeAuthInput {
+export class NodeAuthInput {
   @Field()
   public username: string;
 
   @Field()
   public password: string;
 }
-
 
 @InputType()
 export class CreateCoreTemplateInput {
@@ -21,8 +20,8 @@ export class CreateCoreTemplateInput {
   public name: string;
 
   @Field(() => NodeOS)
-  os: NodeOS
+  os: NodeOS;
 
-  @Field(type => NodeAuthInput)
+  @Field((type) => NodeAuthInput)
   public nodeAuth: NodeAuthInput;
 }

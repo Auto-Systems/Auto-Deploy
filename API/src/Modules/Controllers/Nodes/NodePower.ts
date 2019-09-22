@@ -1,5 +1,5 @@
 // API/src/Modules/Controllers/Nodes/NodePower.ts
-import { registerEnumType } from 'type-graphql'
-import { NodePower } from 'API/Controller/types'
+import { NodePower } from 'API/Controller/types';
+import { registerEnumType } from 'type-graphql';
 
-registerEnumType(NodePower, { name: 'NodePower' })
+registerEnumType(NodePower, { name: 'NodePower' });

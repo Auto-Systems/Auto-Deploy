@@ -1,12 +1,12 @@
 // API/src/Modules/Lifecycle/LifecycleEnvironmentModel.ts
+import 'reflect-metadata';
 import {
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
   BaseEntity,
-  Entity
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import 'reflect-metadata'
 import { Lifecycle } from './LifecycleModel';
 
 @Entity()
@@ -18,8 +18,8 @@ export class LifecycleConfig extends BaseEntity {
   lifecycle: Lifecycle;
 
   @Column('text')
-  key: string
+  key: string;
 
   @Column('text')
-  value: string
+  value: string;
 }

@@ -5,13 +5,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne,
-  OneToMany
 } from 'typeorm';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
-import { CommandResult } from './CommandResultModel'
+import { CommandResult } from './CommandResultModel';
 
 @ObjectType()
 @Entity()
@@ -28,11 +28,13 @@ export class Log extends BaseEntity {
   readonly updatedAt: Date;
 
   @Field(() => [CommandResult])
-  @OneToMany(() => CommandResult, (commandResult) => commandResult.log, { lazy: true })
-  commandResults: CommandResult[]
+  @OneToMany(() => CommandResult, (commandResult) => commandResult.log, {
+    lazy: true,
+  })
+  commandResults: CommandResult[];
 
   @ManyToOne(() => ManagedNode, (manNode) => manNode.logs)
-  managedNode: ManagedNode
+  managedNode: ManagedNode;
   @Column()
-  managedNodeId: string
+  managedNodeId: string;
 }

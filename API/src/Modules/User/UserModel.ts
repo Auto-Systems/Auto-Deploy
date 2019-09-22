@@ -2,13 +2,13 @@
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
   BaseEntity,
+  Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-  Column,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Controller } from '../Controllers/ControllerModel';
 import { ManagedNodePermission } from '../Controllers/ManagedNodes/ManagedNodePermissionModel';
@@ -17,10 +17,10 @@ import { NodeRequest } from '../Controllers/ManagedNodes/NodeRequestModel';
 export enum UserRole {
   GUEST = 'Guest',
   USER = 'User',
-  ADMIN = 'Admin'
+  ADMIN = 'Admin',
 }
 
-registerEnumType(UserRole, { name: 'UserRole' })
+registerEnumType(UserRole, { name: 'UserRole' });
 
 @ObjectType()
 @Entity()
@@ -38,19 +38,25 @@ export class User extends BaseEntity {
 
   @Field()
   @Column('text')
-  username: string
+  username: string;
 
   @Column('enum', { enum: UserRole, array: true, default: [UserRole.USER] })
   role: UserRole[];
 
   @ManyToOne(() => Controller, (controller) => controller.users)
-  readonly controller: Controller
+  readonly controller: Controller;
   @Column()
   controllerId: number;
 
-  @OneToMany(() => ManagedNodePermission, (nodePermission) => nodePermission.user, { lazy: true })
-  nodePermissions: ManagedNodePermission[]
+  @OneToMany(
+    () => ManagedNodePermission,
+    (nodePermission) => nodePermission.user,
+    { lazy: true },
+  )
+  nodePermissions: ManagedNodePermission[];
 
-  @OneToMany(() => NodeRequest, (nodeRequest) => nodeRequest.user, { lazy: true })
-  nodeRequests: NodeRequest[]
+  @OneToMany(() => NodeRequest, (nodeRequest) => nodeRequest.user, {
+    lazy: true,
+  })
+  nodeRequests: NodeRequest[];
 }

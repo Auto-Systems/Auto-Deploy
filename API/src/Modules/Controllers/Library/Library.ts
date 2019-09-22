@@ -1,10 +1,16 @@
 // API/src/Modules/Controllers/Library/Library.ts
 import { LibraryItemType, LibraryItemTypeENUM } from 'API/Controller/types';
-import { Authorized, Field, InputType, ObjectType, registerEnumType } from 'type-graphql';
+import {
+  Authorized,
+  Field,
+  InputType,
+  ObjectType,
+  registerEnumType,
+} from 'type-graphql';
 
 registerEnumType(LibraryItemTypeENUM, {
-  name: 'LibraryItemType'
-})
+  name: 'LibraryItemType',
+});
 
 @ObjectType()
 export class LibraryItem {
@@ -14,7 +20,7 @@ export class LibraryItem {
   @Field()
   public id: string;
 
-  @Field(type => LibraryItemTypeENUM)
+  @Field((type) => LibraryItemTypeENUM)
   public type: LibraryItemType;
 
   @Field()
@@ -26,7 +32,7 @@ export class LibraryItemFilter implements Partial<LibraryItem> {
   @Field({ nullable: true })
   public name: string;
 
-  @Field(type => LibraryItemTypeENUM, { nullable: true })
+  @Field((type) => LibraryItemTypeENUM, { nullable: true })
   public type: LibraryItemType;
 }
 
@@ -41,8 +47,7 @@ export class Library {
   @Field()
   public description: string;
 
-  @Field(type => [LibraryItem])
+  @Field((type) => [LibraryItem])
   @Authorized(['Admin'])
-  public items: LibraryItem[]
+  public items: LibraryItem[];
 }
-

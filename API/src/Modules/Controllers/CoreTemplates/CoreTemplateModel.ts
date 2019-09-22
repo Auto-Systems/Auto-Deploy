@@ -1,18 +1,18 @@
 // API/src/Modules/Controllers/CoreTemplates/CoreTemplateModel.ts
+import { NodeOS } from 'API/Controller/types';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
   ManyToOne,
   OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Controller } from '../ControllerModel';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
-import { NodeOS } from 'API/Controller/types';
 import { NodeRequest } from '../ManagedNodes/NodeRequestModel';
 
 @ObjectType()
@@ -42,22 +42,22 @@ export class CoreTemplate extends BaseEntity {
 
   @Field()
   @Column('text')
-  name: string
+  name: string;
 
   @Field(() => NodeOS)
   @Column({ type: 'enum', enum: NodeOS })
-  os: NodeOS
+  os: NodeOS;
 
   @ManyToOne(() => Controller)
-  readonly controller: Controller
+  readonly controller: Controller;
   @Column()
   controllerId: number;
 
   @OneToMany(() => ManagedNode, (managedNode) => managedNode.coreTemplate)
-  managedNodes: ManagedNode[]
+  managedNodes: ManagedNode[];
 
   @OneToMany(() => NodeRequest, (nodeRequest) => nodeRequest.coreTemplate)
-  nodeRequests: NodeRequest[]
+  nodeRequests: NodeRequest[];
 
   @Field(() => NodeAuth)
   @Column(() => NodeAuth)
@@ -65,9 +65,11 @@ export class CoreTemplate extends BaseEntity {
 
   @Field()
   @Column('text')
-  itemID: string
+  itemID: string;
 
-  static async getOSCoreTemplate(os: NodeOS): Promise<CoreTemplate | undefined> {
-    return this.findOne({ where: { os } })
+  static async getOSCoreTemplate(
+    os: NodeOS,
+  ): Promise<CoreTemplate | undefined> {
+    return this.findOne({ where: { os } });
   }
 }

@@ -1,14 +1,14 @@
 // API/src/Modules/Controllers/ManagedNodes/ApproveNodeRequestInput.ts
-import { InputType, Field } from 'type-graphql';
+import { Field, InputType } from 'type-graphql';
 
 @InputType()
 export class ApproveNodeRequestInput {
   @Field()
-  storage: string
+  storage: string;
 
   @Field()
-  network: string
+  network: string;
 
   @Field()
-  host: string
+  host: string;
 }

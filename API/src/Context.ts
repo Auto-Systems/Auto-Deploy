@@ -75,11 +75,9 @@ export async function getContext(ctx: KoaContext): Promise<Context> {
     return {
       controller: undefined,
       provisioner: undefined,
-      currentUser: undefined
-
-    }
+      currentUser: undefined,
+    };
   }
-
 }
 
 let testCurrentUser: User | undefined;

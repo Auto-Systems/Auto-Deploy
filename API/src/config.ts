@@ -1,6 +1,6 @@
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 
-dotenv.config({ path: '../.env' })
+dotenv.config({ path: '../.env' });
 
 export const config = {
   env: (process.env.NODE_ENV || 'development') as 'development' | 'production',
@@ -15,5 +15,5 @@ export const config = {
     name: process.env.DB_NAME || 'autodeploy',
     username: process.env.DB_USERNAME || 'postgres',
     password: process.env.DB_PASSWORD || 'pgpass',
-  }
-}
+  },
+};

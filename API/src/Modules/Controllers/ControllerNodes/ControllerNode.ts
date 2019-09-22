@@ -1,5 +1,10 @@
 // API/src/Modules/Controllers/ControllerNodes/ControllerNode.ts
-import { ObjectType, Field, InterfaceType, registerEnumType } from 'type-graphql';
+import {
+  Field,
+  InterfaceType,
+  ObjectType,
+  registerEnumType,
+} from 'type-graphql';
 
 @InterfaceType({ isAbstract: true })
 export abstract class BaseCoreNode {
@@ -12,16 +17,16 @@ export abstract class BaseCoreNode {
 
 @ObjectType({ implements: BaseCoreNode })
 export class ControllerNode implements BaseCoreNode {
-  public name: string
+  public name: string;
 
-  public id: string
+  public id: string;
 }
 
 export enum ControllerNodeTypes {
   NETWORK = 'network',
   STORAGE = 'storage',
   HOST = 'host',
-  CORE_TEMPLATE = 'coreTemplate'
+  CORE_TEMPLATE = 'coreTemplate',
 }
 
-registerEnumType(ControllerNodeTypes, { name: 'ControllerxNodeTypes' })
+registerEnumType(ControllerNodeTypes, { name: 'ControllerxNodeTypes' });

@@ -5,16 +5,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  OneToOne,
-  JoinColumn,
-  OneToMany
 } from 'typeorm';
 import { ManagedNode } from '../Controllers/ManagedNodes/ManagedNodeModel';
 import { LifecycleConfig } from './LifecycleEnvironmentModel';
-
-
 
 @ObjectType()
 @Entity()
@@ -33,14 +31,14 @@ export class Lifecycle extends BaseEntity {
   @Field(() => ManagedNode)
   @OneToOne(() => ManagedNode, (managedNode) => managedNode.lifecycle)
   @JoinColumn()
-  node: ManagedNode
+  node: ManagedNode;
   @Column()
-  nodeId: string
+  nodeId: string;
 
   @OneToMany(() => LifecycleConfig, (config) => config.lifecycle)
   @JoinColumn()
-  config: LifecycleConfig[]
+  config: LifecycleConfig[];
 
   @Column('text')
-  file: string
+  file: string;
 }

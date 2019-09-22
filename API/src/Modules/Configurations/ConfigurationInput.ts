@@ -1,17 +1,17 @@
 // API/src/Modules/Configurations/InitialConfigurationsInput.ts
-import { InputType, Field, Int } from 'type-graphql'
+import { Field, InputType, Int } from 'type-graphql';
 
 @InputType()
 export class ConfigurationInput {
   @Field()
-  username: string
+  username: string;
 
   @Field(() => Int)
-  activeControllerId: number
+  activeControllerId: number;
 }
 
 @InputType()
 export class SaveConfigurationInput {
   @Field()
-  controllerHost: string
+  controllerHost: string;
 }

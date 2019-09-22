@@ -1,13 +1,15 @@
 // API/src/Modules/Lifecycle/LifecycleResolver.ts
+import { config } from 'API/config';
 import {
+  decodeENV,
   parseConfigurationFile,
+  processCopyDirs,
   processCopyFiles,
   processEXEC,
   processInstall,
-  decodeENV,
-  processCopyDirs,
 } from 'API/Configuration/parseConfigurationFile';
 import { AuthContext } from 'API/Context';
+import { sign } from 'jsonwebtoken';
 import {
   Arg,
   Authorized,
@@ -19,15 +21,13 @@ import {
   Resolver,
 } from 'type-graphql';
 import { ManagedNode } from '../Controllers/ManagedNodes/ManagedNodeModel';
+import { UserPermission } from '../Controllers/ManagedNodes/ManagedNodePermissionModel';
 import {
   initialProvisionNode,
   ProvisionTypes,
 } from '../Provisioners/Actions/initialProvision';
 import { LifecycleConfig } from './LifecycleEnvironmentModel';
 import { Lifecycle } from './LifecycleModel';
-import { sign } from 'jsonwebtoken';
-import { config } from 'API/config';
-import { UserPermission } from '../Controllers/ManagedNodes/ManagedNodePermissionModel';
 
 @InputType()
 class LCENV {
@@ -49,9 +49,6 @@ class CreateLifecycleInput {
   @Field()
   file: string;
 }
-
-const envRegex = /\$\{(_.*)\}/;
-let envTester = 'curl ${_GITHUB_TOKEN}';
 
 @Resolver()
 export class LifecycleResolver {
@@ -90,26 +87,10 @@ export class LifecycleResolver {
       currentUser,
     }: AuthContext,
   ): Promise<boolean> {
-    await processCopyDirs({ sourceHost: ip, destHost: ip2 }, [{ from: path, to: path2 }])
+    await processCopyDirs({ sourceHost: ip, destHost: ip2 }, [
+      { from: path, to: path2 },
+    ]);
 
-    return true;
-  }
-
-  @Authorized()
-  @Query(() => Boolean)
-  async testConfig(@Arg('id') id: string): Promise<boolean> {
-    const test = await Lifecycle.findOneOrFail({
-      where: { nodeId: id },
-      relations: ['config'],
-    });
-    const test2 = envRegex.exec(envTester)![1];
-    test.config.map(({ key, value }) => {
-      if (envTester.includes(`\$\{${key}\}`))
-        envTester = envTester.replace(`\$\{${key}\}`, value);
-    });
-    console.log(envTester);
-    console.log(test2);
-    console.log(test.config);
     return true;
   }
 
@@ -156,8 +137,6 @@ export class LifecycleResolver {
     console.log('Provisioining complete');
 
     const result = await controller.getNodeInfo(newNode.id);
-
-    console.log(result);
 
     await provisioner.loadKeys();
     await provisioner.initProvisioner(result.network.host);

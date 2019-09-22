@@ -1,4 +1,14 @@
 // API/src/Modules/Provisioners/ProvisionerModel.ts
+import { ProvisionerContext } from 'API/Context';
+import { ProvisionerPath } from 'API/Library/getProvisioner';
+import { loadMethod } from 'API/Provisioner/Decorators/MethodDecorator';
+import {
+  ProvisionerMethodENUM,
+  ProvisionerModule,
+} from 'API/Provisioner/types';
+import Dockerode from 'dockerode';
+import pEvent from 'p-event';
+import { Writable } from 'stream';
 import { Field, ID, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
@@ -8,19 +18,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ProvisionerContext } from 'API/Context';
 import { extractProvisioner } from './getActiveProvisioner';
-import {
-  ProvisionerModule,
-  ProvisionerMethodENUM,
-} from 'API/Provisioner/types';
-import { loadMethod } from 'API/Provisioner/Decorators/MethodDecorator';
-import { Writable } from 'stream';
-import Dockerode from 'dockerode';
-import pEvent from 'p-event';
-import { ProvisionerPath } from 'API/Library/getProvisioner';
 
-const timeout = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
+const timeout = (ms: number): Promise<void> =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 @ObjectType()
 @Entity()
@@ -53,14 +54,21 @@ export class Provisioner extends BaseEntity {
     keyStream._write = (chunk: Buffer) =>
       keyStream.emit('data', chunk.toString());
 
-
-    await Promise.all([docker.run('docker.pkg.github.com/kristianfjones/auto-deploy/controllerdl', [], keyStream, {
-      Env: [`GIT_URL=${provisionerGit}`],
-      HostConfig: {
-        Binds: [`${ProvisionerPath}:/Controller`],
-      },
-    }), pEvent<string, string>(keyStream, 'data') ])
-    await timeout(2500)
+    await Promise.all([
+      docker.run(
+        'docker.pkg.github.com/kristianfjones/auto-deploy/controllerdl',
+        [],
+        keyStream,
+        {
+          Env: [`GIT_URL=${provisionerGit}`],
+          HostConfig: {
+            Binds: [`${ProvisionerPath}:/Controller`],
+          },
+        },
+      ),
+      pEvent<string, string>(keyStream, 'data'),
+    ]);
+    await timeout(2500);
     return true;
   }
 

@@ -1,19 +1,19 @@
 // API/src/Modules/Controllers/NodeRequets/NodeRequestModel.ts
+import { User } from 'API/Modules/User/UserModel';
 import { Field, ID, ObjectType, registerEnumType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
+  JoinColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { User } from 'API/Modules/User/UserModel';
-import { NodeRequestENVConfig } from './NodeRequestENVModel';
 import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
+import { NodeRequestENVConfig } from './NodeRequestENVModel';
 
 export enum NodeRequestState {
   SUBMITTED = 'Submitted',
@@ -43,15 +43,15 @@ export class NodeRequest extends BaseEntity {
 
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.nodeRequests, { lazy: true })
-  user: User
+  user: User;
   @Column()
-  userId: number
+  userId: number;
 
   @Field(() => CoreTemplate)
-  @ManyToOne(() => CoreTemplate, )
+  @ManyToOne(() => CoreTemplate)
   coreTemplate: CoreTemplate;
   @Column()
-  coreTemplateId: string
+  coreTemplateId: string;
 
   @Field()
   @Column('text')
@@ -71,5 +71,5 @@ export class NodeRequest extends BaseEntity {
 
   @OneToMany(() => NodeRequestENVConfig, (config) => config.request)
   @JoinColumn()
-  config: NodeRequestENVConfig[]
+  config: NodeRequestENVConfig[];
 }

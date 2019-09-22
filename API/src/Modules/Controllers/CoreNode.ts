@@ -1,5 +1,5 @@
 // API/src/Modules/Controllers/CoreNode.ts
-import { InterfaceType, Field } from 'type-graphql';
+import { Field, InterfaceType } from 'type-graphql';
 
 @InterfaceType()
 export abstract class CoreNode {

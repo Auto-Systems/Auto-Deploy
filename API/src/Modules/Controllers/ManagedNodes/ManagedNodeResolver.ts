@@ -72,7 +72,7 @@ export class ManagedNodeResovler {
     });
 
     nodeRequest.state = NodeRequestState.APPROVED;
-    await nodeRequest.save()
+    await nodeRequest.save();
 
     const newNode = await controller.createNode({
       name: `${nodeRequest.name}-prod`,
@@ -85,7 +85,7 @@ export class ManagedNodeResovler {
       name: newNode.name,
       coreTemplateId: nodeRequest.coreTemplate.id,
       controllerId: record.id,
-      node: newNode.id
+      node: newNode.id,
     }).save();
 
     await ManagedNodePermission.create({
@@ -96,7 +96,7 @@ export class ManagedNodeResovler {
         UserPermission.WRITE,
         UserPermission.ADMIN,
       ],
-    }).save()
+    }).save();
 
     await newManagedNode.save();
 
@@ -129,7 +129,12 @@ export class ManagedNodeResovler {
         await processInstall(network.host, configuration.install);
 
       if (configuration.exec && configuration.exec.length > 0)
-        await processEXEC(network.host, configuration.exec, newManagedNode.id, nodeRequest.config,);
+        await processEXEC(
+          network.host,
+          configuration.exec,
+          newManagedNode.id,
+          nodeRequest.config,
+        );
     }
 
     return newManagedNode;

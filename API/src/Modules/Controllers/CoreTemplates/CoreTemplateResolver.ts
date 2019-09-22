@@ -1,14 +1,17 @@
 // API/src/Modules/Controllers/CoreTemplates/CoreTemplateResolver.ts
-import { Resolver, Query, Authorized, Mutation, Arg, Ctx } from 'type-graphql';
-import { CoreTemplate } from './CoreTemplateModel';
 import { AuthContext } from 'API/Context';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
+import { CoreTemplate } from './CoreTemplateModel';
 import { CreateCoreTemplateInput } from './CreateCoreTemplateInput';
 
 @Resolver(() => CoreTemplate)
 export class CoreTemplateResolver {
   @Authorized()
   @Query((returns) => [CoreTemplate])
-  public async coreTemplates(@Ctx() { controller: { record } }: AuthContext): Promise<CoreTemplate[]> {
+  public async coreTemplates(@Ctx()
+  {
+    controller: { record },
+  }: AuthContext): Promise<CoreTemplate[]> {
     return CoreTemplate.find({ where: { controllerId: record.id } });
   }
 
