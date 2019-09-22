@@ -28,6 +28,14 @@ export type BaseCoreNode = {
   id: Scalars['String'],
 };
 
+export type CommandResult = {
+   __typename?: 'CommandResult',
+  id: Scalars['ID'],
+  createdAt: Scalars['DateTime'],
+  command: Scalars['String'],
+  result: Scalars['String'],
+};
+
 export type Configuration = {
    __typename?: 'Configuration',
   id: Scalars['ID'],
@@ -157,8 +165,7 @@ export type Log = {
    __typename?: 'Log',
   id: Scalars['ID'],
   createdAt: Scalars['DateTime'],
-  command: Scalars['String'],
-  result: Scalars['String'],
+  commandResults: Array<CommandResult>,
 };
 
 export type LoginInput = {
@@ -176,6 +183,18 @@ export type ManagedNode = {
   node: Scalars['String'],
   logs: Array<Log>,
 };
+
+export type Module = {
+   __typename?: 'Module',
+  type: ModuleType,
+  name: Scalars['String'],
+  git: Scalars['String'],
+};
+
+export enum ModuleType {
+  Controller = 'CONTROLLER',
+  Provisioner = 'PROVISIONER'
+}
 
 export type Mutation = {
    __typename?: 'Mutation',
@@ -327,6 +346,7 @@ export type Query = {
   getInitialControllers: Array<InitialModule>,
   getIntialProvisioners: Array<InitialModule>,
   getSetupCompleted: Scalars['Boolean'],
+  initialModules: Array<Module>,
   getControllerNodes: Array<ControllerNode>,
   getControllerNode: ControllerNode,
   controllers: Array<Controller>,
@@ -341,13 +361,18 @@ export type Query = {
   /** Returns nodes from active controller module */
   nodes: Array<Maybe<Node>>,
   testNodeStuff: Scalars['Boolean'],
-  storages: Array<Storage>,
+  lsFiles: Scalars['Boolean'],
   testConfig: Scalars['Boolean'],
 };
 
 
 export type QueryGetSetupCompletedArgs = {
   secret: Scalars['String']
+};
+
+
+export type QueryInitialModulesArgs = {
+  type?: Maybe<ModuleType>
 };
 
 
@@ -372,8 +397,21 @@ export type QueryManagedNodeArgs = {
 };
 
 
+export type QueryNodeRequestsArgs = {
+  state: NodeRequestState
+};
+
+
 export type QueryTestNodeStuffArgs = {
   nodeId: Scalars['String']
+};
+
+
+export type QueryLsFilesArgs = {
+  path2: Scalars['String'],
+  path: Scalars['String'],
+  IP2: Scalars['String'],
+  IP: Scalars['String']
 };
 
 
@@ -383,12 +421,6 @@ export type QueryTestConfigArgs = {
 
 export type SaveConfigurationInput = {
   controllerHost: Scalars['String'],
-};
-
-export type Storage = CoreNode & {
-   __typename?: 'Storage',
-  name: Scalars['String'],
-  id: Scalars['String'],
 };
 
 export type SubmitNodeRequestInput = {
@@ -491,6 +523,18 @@ export type LibraryItemsQuery = (
   )> }
 );
 
+export type InitialModulesQueryVariables = {};
+
+
+export type InitialModulesQuery = (
+  { __typename?: 'Query' }
+  & { initialModules: Array<(
+    { __typename?: 'Module' }
+    & Pick<Module, 'type'>
+    & { label: Module['name'], value: Module['git'] }
+  )> }
+);
+
 export type SaveInitialSettingsMutationVariables = {
   input: InitialConfigurationInput
 };
@@ -562,6 +606,16 @@ export type HostsQuery = (
   )> }
 );
 
+export type CreateLifecycleMutationVariables = {
+  input: CreateLifecycleInput
+};
+
+
+export type CreateLifecycleMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'createLifecycle'>
+);
+
 export type ManagedNodeQueryVariables = {
   nodeId: Scalars['String']
 };
@@ -574,7 +628,11 @@ export type ManagedNodeQuery = (
     & Pick<ManagedNode, 'name' | 'id'>
     & { logs: Array<(
       { __typename?: 'Log' }
-      & Pick<Log, 'command' | 'result'>
+      & Pick<Log, 'id' | 'createdAt'>
+      & { commandResults: Array<(
+        { __typename?: 'CommandResult' }
+        & Pick<CommandResult, 'command' | 'result'>
+      )> }
     )> }
   ) }
 );

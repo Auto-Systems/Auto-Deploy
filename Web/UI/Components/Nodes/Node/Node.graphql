@@ -3,8 +3,12 @@ query ManagedNode($nodeId: String!) {
     name
     id
     logs {
-      command
-      result
+      id
+      createdAt
+    	commandResults {
+        command
+        result
+      }
     }
   }
 }

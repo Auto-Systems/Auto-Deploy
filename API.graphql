@@ -20,6 +20,13 @@ interface BaseCoreNode {
   id: String!
 }
 
+type CommandResult {
+  id: ID!
+  createdAt: DateTime!
+  command: String!
+  result: String!
+}
+
 type Configuration {
   id: ID!
   createdAt: DateTime!
@@ -99,6 +106,18 @@ type InitialModule {
   git: String!
 }
 
+type InitialModules {
+  name: String!
+  type: ModuleType!
+  git: String!
+}
+
+input InstallModuleInput {
+  name: String!
+  type: ModuleType!
+  git: String!
+}
+
 input LCENV {
   key: String!
   value: String!
@@ -139,8 +158,7 @@ type Lifecycle {
 type Log {
   id: ID!
   createdAt: DateTime!
-  command: String!
-  result: String!
+  commandResults: [CommandResult!]!
 }
 
 input LoginInput {
@@ -159,11 +177,23 @@ type ManagedNode {
   logs: [Log!]!
 }
 
+type Module {
+  type: ModuleType!
+  name: String!
+  git: String!
+}
+
+enum ModuleType {
+  CONTROLLER
+  PROVISIONER
+}
+
 type Mutation {
   login(input: LoginInput!): AuthOutput!
   initialConfiguration(input: InitialConfigurationInput!): Boolean!
   addUser(username: String!): Boolean!
   saveConfiguration(input: SaveConfigurationInput!): Configuration!
+  installModule(input: InstallModuleInput!): Module!
   downloadController(git: String!): Boolean!
   createCoreTemplate(input: CreateCoreTemplateInput!): CoreTemplate!
   approveNodeRequest(input: ApproveNodeRequestInput!, requestId: String!): ManagedNode!
@@ -234,6 +264,7 @@ type Query {
   getInitialControllers: [InitialModule!]!
   getIntialProvisioners: [InitialModule!]!
   getSetupCompleted(secret: String!): Boolean!
+  initialModules(type: ModuleType): [InitialModules!]!
   getControllerNodes(type: ControllerxNodeTypes!): [ControllerNode!]!
   getControllerNode(id: String!, type: ControllerxNodeTypes!): ControllerNode!
   controllers: [Controller!]!
@@ -244,22 +275,17 @@ type Query {
   getAllManagedNodes: [ManagedNode!]!
   managedNodes: [ManagedNode!]!
   managedNode(nodeId: String!): ManagedNode!
-  nodeRequests: [NodeRequest!]!
+  nodeRequests(state: NodeRequestState!): [NodeRequest!]!
 
   """Returns nodes from active controller module"""
   nodes: [Node]!
   testNodeStuff(nodeId: String!): Boolean!
-  storages: [Storage!]!
+  lsFiles(path2: String!, path: String!, IP2: String!, IP: String!): Boolean!
   testConfig(id: String!): Boolean!
 }
 
 input SaveConfigurationInput {
   controllerHost: String!
-}
-
-type Storage implements CoreNode {
-  name: String!
-  id: String!
 }
 
 input SubmitNodeRequestInput {

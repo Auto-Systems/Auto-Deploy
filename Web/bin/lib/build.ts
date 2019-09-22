@@ -29,7 +29,7 @@ export const build = async (watch: boolean = false): Promise<void> => {
   await bundler.bundle();
 
   process.env['BABEL_ENV'] = 'server';
-  const serverBundler = new ParcelBundler(['Server/index.ts', 'Server/server.urls', 'Server/service-worker.ts'], {
+  const serverBundler = new ParcelBundler(['server/index.ts', 'server/server.urls', 'server/service-worker.ts'], {
     outDir: 'dist/server',
     watch,
     target: 'node',

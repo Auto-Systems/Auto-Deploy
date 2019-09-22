@@ -17,8 +17,8 @@ import {
 import { loadMethod } from 'API/Provisioner/Decorators/MethodDecorator';
 import { Writable } from 'stream';
 import Dockerode from 'dockerode';
-import { resolve } from 'path';
 import pEvent from 'p-event';
+import { ProvisionerPath } from 'API/Library/getProvisioner';
 
 const timeout = (ms: number): Promise<void> => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -54,10 +54,10 @@ export class Provisioner extends BaseEntity {
       keyStream.emit('data', chunk.toString());
 
 
-    await Promise.all([docker.run('controllerdl', [], keyStream, {
+    await Promise.all([docker.run('docker.pkg.github.com/kristianfjones/auto-deploy/controllerdl', [], keyStream, {
       Env: [`GIT_URL=${provisionerGit}`],
       HostConfig: {
-        Binds: [`${resolve(`${__dirname}/../../Provisioner/`)}:/Controller`],
+        Binds: [`${ProvisionerPath}:/Controller`],
       },
     }), pEvent<string, string>(keyStream, 'data') ])
     await timeout(2500)

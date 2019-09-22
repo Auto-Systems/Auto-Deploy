@@ -7,9 +7,11 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-  ManyToOne
+  ManyToOne,
+  OneToMany
 } from 'typeorm';
 import { ManagedNode } from '../ManagedNodes/ManagedNodeModel';
+import { CommandResult } from './CommandResultModel'
 
 @ObjectType()
 @Entity()
@@ -25,13 +27,9 @@ export class Log extends BaseEntity {
   @UpdateDateColumn()
   readonly updatedAt: Date;
 
-  @Field()
-  @Column('text')
-  command: string;
-
-  @Field()
-  @Column('text')
-  result: string
+  @Field(() => [CommandResult])
+  @OneToMany(() => CommandResult, (commandResult) => commandResult.log, { lazy: true })
+  commandResults: CommandResult[]
 
   @ManyToOne(() => ManagedNode, (manNode) => manNode.logs)
   managedNode: ManagedNode

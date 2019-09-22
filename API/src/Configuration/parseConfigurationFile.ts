@@ -5,8 +5,8 @@ import { Field, InputType } from 'type-graphql';
 import { verify } from 'jsonwebtoken';
 import { config } from 'API/config';
 import { Provisioner } from 'API/Modules/Provisioners/ProvisionerModel';
-import { ProvisionerModule } from 'API/Provisioner/types';
 import { Log } from 'API/Modules/Controllers/Logging/LogModel';
+import { CommandResult } from 'API/Modules/Controllers/Logging/CommandResultModel';
 
 @InputType()
 export class ENV {
@@ -18,7 +18,6 @@ export class ENV {
 }
 
 interface ConfigurationFile {
-  name: string;
   copyFiles?: string[];
   copyDirs?: string[];
   install?: string[];
@@ -36,7 +35,6 @@ interface CopyDirs {
 }
 
 interface Configuration {
-  name: string;
   copyFiles: CopyFiles[];
   copyDirs: CopyDirs[];
   install: string[];
@@ -47,7 +45,6 @@ export function parseConfigurationFile(file: string): Configuration {
   const config = parse(file) as ConfigurationFile;
 
   let Configuration: Configuration = {
-    name: config.name,
     copyFiles: [],
     copyDirs: [],
     install: config.install || [],
@@ -77,7 +74,7 @@ interface HostArgs {
 
 export async function processCopyFiles(
   { sourceHost, destHost }: HostArgs,
-  copy: CopyFiles,
+  copy: CopyFiles[],
 ): Promise<void> {
   const [prov1, prov2] = await Promise.all([
     Provisioner.getProvisioner(),
@@ -96,38 +93,61 @@ export async function processCopyFiles(
 
   await Promise.all([SourceProvision.initFiles(), DestProvision.initFiles()]);
 
-  const [readStream, writeStream] = await Promise.all([
-    SourceProvision.createReadStream(copy.from),
-    DestProvision.createWriteStream(copy.to),
-  ]);
+  await Promise.all(
+    copy.map(async (files) => {
+      const [readStream, writeStream] = await Promise.all([
+        SourceProvision.createReadStream(files.from),
+        DestProvision.createWriteStream(files.to),
+      ]);
 
-  readStream.pipe(writeStream);
-
-  return pEvent(writeStream, 'finish');
+      readStream.pipe(writeStream);
+      return pEvent(writeStream, 'finish');
+    }),
+  );
 }
 
 export async function processCopyDirs(
   { sourceHost, destHost }: HostArgs,
-  copy: CopyDirs,
-): Promise<void[]> {
-  const prov = await Provisioner.getProvisioner();
-  if (!prov) throw new Error();
-  const { provisioner: SourceProvision } = prov;
-  await SourceProvision.loadKeys();
+  copy: CopyDirs[],
+): Promise<void> {
+  console.log('Get Provisioner');
+  const [prov1, prov2] = await Promise.all([
+    Provisioner.getProvisioner(),
+    Provisioner.getProvisioner(),
+  ]);
+  if (!prov1 || !prov2) throw new Error();
+  const { provisioner: SourceProvision } = prov1;
+  const { provisioner: DestProvision } = prov2;
 
-  await SourceProvision.initProvisioner(sourceHost);
+  await Promise.all([SourceProvision.loadKeys(), DestProvision.loadKeys()]);
 
-  await SourceProvision.initFiles();
+  await Promise.all([
+    SourceProvision.initProvisioner(sourceHost),
+    DestProvision.initProvisioner(destHost),
+  ]);
 
-  const sourceFiles = await SourceProvision.listDirectory(copy.from);
-  return Promise.all(
-    sourceFiles.map(({ filename }) =>
-      processCopyFiles(
-        { sourceHost, destHost },
-        { from: `${copy.from}/${filename}`, to: `${copy.to}/${filename}` },
-      ),
-    ),
+  await Promise.all([SourceProvision.initFiles(), DestProvision.initFiles()]);
+
+  await Promise.all(
+    copy.map(async (dir) => {
+      await SourceProvision.runCommand(
+        `tar -czpf /tmp/archive.tar.gz -C ${dir.from} .`,
+      );
+      const [readStream, writeStream] = await Promise.all([
+        SourceProvision.createReadStream(`/tmp/archive.tar.gz`),
+        DestProvision.createWriteStream(`/tmp/archive.tar.gz`),
+      ]);
+
+      readStream.pipe(writeStream);
+      await pEvent(writeStream, 'finish');
+
+      return DestProvision.runCommand(
+        `mkdir ${dir.to} && tar -xzpf /tmp/archive.tar.gz -C ${dir.to}`,
+      );
+    }),
   );
+
+  return;
 }
 
 export async function processInstall(
@@ -155,17 +175,6 @@ export function decodeENV(secrets: ENV[]): ENV[] {
   }));
 }
 
-interface RunCommandInput {
-  provisioner: ProvisionerModule;
-  command: string
-  managedNodeId: string
-}
-
-export async function execCommand({ provisioner, command, managedNodeId }: RunCommandInput): Promise<string> {
-  const result = await provisioner.runCommand(command)
-  await Log.create({ command, result, managedNodeId }).save()
-  return result
-}
 export async function processEXEC(
   host: string,
   cmds: string[],
@@ -180,7 +189,7 @@ export async function processEXEC(
 
   await Provision.initProvisioner(host);
 
-  let results: string[] = [];
+  const log = await Log.create({ managedNodeId }).save();
 
   const configENVs: { [name: string]: string } = {};
   for (const { key, value } of secrets || []) configENVs[key] = value;
@@ -188,9 +197,17 @@ export async function processEXEC(
   for (const exec of cmds) {
     const cmd = exec.replace(/\$\{(.*)\}/, '${configENVs.$1}');
     const evaledCMD = eval(`\`${cmd}\``);
-    console.log(`${evaledCMD}`);
-    results.push(await execCommand({ provisioner: Provision, managedNodeId, command: evaledCMD }));
+
+    const result = await Provision.runCommand(evaledCMD);
+
+    await CommandResult.create({
+      command: cmd,
+      result: result,
+      logId: log.id,
+    }).save();
   }
+
+  await log.save();
 
   return 'HelloWorld';
 }

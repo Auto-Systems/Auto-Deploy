@@ -10,7 +10,9 @@ const methodNames: MethodNames = {
   initFiles: 'initFiles',
   createWriteStream: 'createWriteStream',
   createReadStream: 'createReadStream',
-  listDirectory: 'listDirectory'
+  listDirectory: 'listDirectory',
+  createDirectory: 'createDirectory',
+  lab: 'lab'
 };
 // @ts-ignore
 export const loadMethod = <T extends keyof MethodNames>(key: T, controller: ProvisionerModule): ProvisionerModule[T] =>

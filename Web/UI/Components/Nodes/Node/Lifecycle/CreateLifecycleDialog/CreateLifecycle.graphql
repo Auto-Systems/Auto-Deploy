@@ -1,0 +1,3 @@
+mutation CreateLifecycle($input: CreateLifecycleInput!) {
+  createLifecycle(input: $input)
+}

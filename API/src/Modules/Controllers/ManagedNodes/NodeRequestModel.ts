@@ -15,7 +15,7 @@ import { User } from 'API/Modules/User/UserModel';
 import { NodeRequestENVConfig } from './NodeRequestENVModel';
 import { CoreTemplate } from '../CoreTemplates/CoreTemplateModel';
 
-enum NodeRequestState {
+export enum NodeRequestState {
   SUBMITTED = 'Submitted',
   APPROVED = 'Approved',
   DENIED = 'Denied',

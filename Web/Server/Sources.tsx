@@ -1,6 +1,6 @@
 // UI/server/Sources.tsx
 import React from 'react';
-import { Source } from 'Server/type';
+import { Source } from 'server/type';
 import { renderToString } from 'react-dom/server';
 
 interface ScriptTagsProps {

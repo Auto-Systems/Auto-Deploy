@@ -1,4 +1,4 @@
-import { Context, getTestContext } from 'API/context'
+import { Context, getTestContext } from 'API/Context'
 import {
   execute as executeGraphql,
   GraphQLSchema,

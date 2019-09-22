@@ -4,6 +4,8 @@ import { resolve } from 'path';
 import { ProvisionerClass } from 'API/Provisioner/types';
 import { Provisioner } from 'API/Modules/Provisioners/ProvisionerModel';
 
+export const ProvisionerPath = process.env['NODE_ENV'] === 'production' ? resolve('/Provisioners') : resolve(`${__dirname}/../Provisioner/`)
+
 interface Module {
   name: string;
   path: string;
@@ -11,9 +13,7 @@ interface Module {
 
 export const provisioners: Module[] = [];
 
-const filenames = glob.sync(
-  resolve(`${__dirname}/../Provisioner/*/*Provisioner.*s`),
-);
+const filenames = glob.sync(resolve(`${ProvisionerPath}/*/*Provisioner.js`));
 for (const filename of filenames) {
   const module = require(filename);
   for (const [, provisionerClass] of Object.entries(
@@ -29,9 +29,7 @@ for (const filename of filenames) {
 async function getFiles(): Promise<Module[]> {
   const shit: Module[] = [];
 
-  const filenames = glob.sync(
-    resolve(`${__dirname}/../Provisioner/*/*Provisioner.*s`),
-  );
+  const filenames = glob.sync(resolve(`${ProvisionerPath}/*/*Provisioner.js`));
   for (const filename of filenames) {
     const module = require(filename);
     for (const [, provisionerClass] of Object.entries(

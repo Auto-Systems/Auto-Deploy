@@ -1,5 +1,5 @@
 query NodeRequests {
-  nodeRequests {
+  nodeRequests(state: SUBMITTED) {
     name
     purpose
     id

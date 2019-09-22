@@ -11,8 +11,8 @@ import { checkIsSetup, getConfig } from './Settings';
 const port = 81;
 
 const loadServer = async (): Promise<typeof import('./server')> => {
-  const manifest = await readJSON(`dist/server/parcel-manifest.json`);
-  return import(`${__dirname}${manifest['../server/server.tsx']}`);
+  const manifest = await readJSON(`dist/server/server.json`);
+  return import(`${__dirname}${manifest['server']}`);
 };
 
 const startServer = async (): Promise<void> => {

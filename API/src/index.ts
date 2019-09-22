@@ -20,12 +20,13 @@ export async function startAPI(): Promise<void> {
       schema: await generateGQLSchema(),
       playground: true,
       introspection: true,
-      context: async ({ ctx }) => getContext(ctx),
+      context: async ({ ctx }) => getContext(ctx)
     })
     apiServer.applyMiddleware({ app: server })
     
-    await server.listen(config.port)
-    console.log(`API is listening on`)
+    const httpServer = server.listen(config.port)
+    httpServer.timeout=10*60*1000;
+    console.log(`API is listening on ${config.port}`)
     // Uncomment if Subscriptions are needed
     // apiServer.installSubscriptionHandlers(httpServer)
   } catch (err) {

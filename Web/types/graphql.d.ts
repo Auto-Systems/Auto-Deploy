@@ -53,6 +53,15 @@ declare module '*/LibraryItems.graphql' {
 }
     
 
+declare module '*/InitialModules.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const InitialModules: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
 declare module '*/saveInitialSettings.graphql' {
   import { DocumentNode } from 'graphql';
   const defaultDocument: DocumentNode;
@@ -78,6 +87,15 @@ declare module '*/ControllerNodes.graphql' {
   export const Storages: DocumentNode;
 export const Networks: DocumentNode;
 export const Hosts: DocumentNode;
+
+  export default defaultDocument;
+}
+    
+
+declare module '*/CreateLifecycle.graphql' {
+  import { DocumentNode } from 'graphql';
+  const defaultDocument: DocumentNode;
+  export const CreateLifecycle: DocumentNode;
 
   export default defaultDocument;
 }

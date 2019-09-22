@@ -43,33 +43,43 @@ interface AuthPayload {}
 export async function getContext(ctx: KoaContext): Promise<Context> {
   const authorization = ctx.headers.authorization;
   try {
-    let payload = verify(
-      authorization.replace(/^Bearer\s/, ''),
-      config.secretKey,
-    ) as AuthPayload;
-    const [controller, provisioner, currentUser] = await Promise.all([
-      Controller.getController({
-        host: payload.host,
-        token: payload.sessionToken,
-      }),
+    try {
+      let payload = verify(
+        authorization.replace(/^Bearer\s/, ''),
+        config.secretKey,
+      ) as AuthPayload;
+      const [controller, provisioner, currentUser] = await Promise.all([
+        Controller.getController({
+          host: payload.host,
+          token: payload.sessionToken,
+        }),
+        Provisioner.getProvisioner(),
+        User.findOne({ id: payload.userId }),
+      ]);
+      return {
+        controller,
+        currentUser,
+        provisioner,
+      };
+    } catch {}
+    const [controller, provisioner] = await Promise.all([
+      Controller.getController(),
       Provisioner.getProvisioner(),
-      User.findOne({ id: payload.userId }),
     ]);
     return {
       controller,
-      currentUser,
+      currentUser: undefined,
       provisioner,
     };
-  } catch {}
-  const [controller, provisioner] = await Promise.all([
-    Controller.getController(),
-    Provisioner.getProvisioner(),
-  ]);
-  return {
-    controller,
-    currentUser: undefined,
-    provisioner,
-  };
+  } catch {
+    return {
+      controller: undefined,
+      provisioner: undefined,
+      currentUser: undefined
+
+    }
+  }
+
 }
 
 let testCurrentUser: User | undefined;

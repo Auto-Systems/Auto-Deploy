@@ -17,7 +17,7 @@ import {
   ManagedNodePermission,
   UserPermission,
 } from './ManagedNodePermissionModel';
-import { NodeRequest } from './NodeRequestModel';
+import { NodeRequest, NodeRequestState } from './NodeRequestModel';
 
 @Resolver(() => ManagedNode)
 export class ManagedNodeResovler {
@@ -71,6 +71,9 @@ export class ManagedNodeResovler {
       relations: ['config', 'coreTemplate'],
     });
 
+    nodeRequest.state = NodeRequestState.APPROVED;
+    await nodeRequest.save()
+
     const newNode = await controller.createNode({
       name: `${nodeRequest.name}-prod`,
       coreTemplate: nodeRequest.coreTemplate.itemID,
@@ -104,8 +107,6 @@ export class ManagedNodeResovler {
       coreTemplateId: newManagedNode.coreTemplateId,
       type: ProvisionTypes.PROD,
     });
-
-    console.log(nodeRequest);
 
     if (nodeRequest.configurationFile) {
       const base64 = nodeRequest.configurationFile.replace(

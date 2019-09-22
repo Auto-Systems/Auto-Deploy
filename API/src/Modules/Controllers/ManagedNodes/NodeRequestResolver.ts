@@ -1,6 +1,6 @@
 // API/src/Modules/Controllers/NodeRequests/NodeRequestResolver.ts
 import { Resolver, Query, Mutation, Authorized, Ctx, Arg } from 'type-graphql';
-import { NodeRequest } from './NodeRequestModel';
+import { NodeRequest, NodeRequestState } from './NodeRequestModel';
 import { AuthContext } from 'API/Context';
 import { SubmitNodeRequestInput } from './SubmitNodeRequestInput';
 import { NodeRequestENVConfig } from './NodeRequestENVModel';
@@ -9,8 +9,8 @@ import { NodeRequestENVConfig } from './NodeRequestENVModel';
 export class NodeRequestResolver {
   @Authorized(['Admin'])
   @Query(() => [NodeRequest])
-  async nodeRequests(): Promise<NodeRequest[]> {
-    return NodeRequest.find();
+  async nodeRequests(@Arg('state', () => NodeRequestState) state: NodeRequestState): Promise<NodeRequest[]> {
+    return NodeRequest.find({ state });
   }
 
   @Authorized()

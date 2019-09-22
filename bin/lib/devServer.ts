@@ -135,7 +135,7 @@ export default async function main() {
   //  )
 
   spawnProc('API')
-  onChange([absolutePath('API/src/Modules/**/*.ts')], () => spawnProc('API'))
+  onChange([absolutePath('API/src/Modules/**/*.ts'),  absolutePath('API/src/Configuration/**/*.ts'), absolutePath('API/src/Controller/Decorators/*.ts')], () => spawnProc('API'))
 
   spawnProc('Web')
   onChange([absolutePath('Web/bin/**/*.ts'), absolutePath('Web/Server/index.ts')], () => spawnProc('Web'))

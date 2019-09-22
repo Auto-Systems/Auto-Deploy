@@ -5,6 +5,7 @@ import {
   processEXEC,
   processInstall,
   decodeENV,
+  processCopyDirs,
 } from 'API/Configuration/parseConfigurationFile';
 import { AuthContext } from 'API/Context';
 import {
@@ -16,7 +17,6 @@ import {
   Mutation,
   Query,
   Resolver,
-  ForbiddenError,
 } from 'type-graphql';
 import { ManagedNode } from '../Controllers/ManagedNodes/ManagedNodeModel';
 import {
@@ -78,6 +78,25 @@ export class LifecycleResolver {
 
   @Authorized()
   @Query(() => Boolean)
+  async lsFiles(
+    @Arg('IP') ip: string,
+    @Arg('IP2') ip2: string,
+    @Arg('path') path: string,
+    @Arg('path2') path2: string,
+    @Ctx()
+    {
+      controller: controllerContext,
+      provisioner: provisionerContext,
+      currentUser,
+    }: AuthContext,
+  ): Promise<boolean> {
+    await processCopyDirs({ sourceHost: ip, destHost: ip2 }, [{ from: path, to: path2 }])
+
+    return true;
+  }
+
+  @Authorized()
+  @Query(() => Boolean)
   async testConfig(@Arg('id') id: string): Promise<boolean> {
     const test = await Lifecycle.findOneOrFail({
       where: { nodeId: id },
@@ -102,7 +121,7 @@ export class LifecycleResolver {
     {
       controller: controllerContext,
       provisioner: provisionerContext,
-      currentUser
+      currentUser,
     }: AuthContext,
   ): Promise<string> {
     const { controller } = controllerContext;
@@ -114,10 +133,9 @@ export class LifecycleResolver {
       }),
     ]);
 
-    const userNodePermission = managedNode.nodePermissions.find(({ userId }) => userId === currentUser.id)
-    if (!userNodePermission || !userNodePermission.userPermission.includes(UserPermission.ADMIN)) throw new ForbiddenError()
+    await managedNode.getUserPermitted(currentUser, UserPermission.ADMIN);
 
-    console.log(managedNode, lifecycle)
+    console.log(managedNode, lifecycle);
 
     const newNode = await controller.createNode({
       ...managedNode,
@@ -125,7 +143,7 @@ export class LifecycleResolver {
       coreTemplate: managedNode.coreTemplate.itemID,
     });
 
-    console.log(newNode)
+    console.log(newNode);
 
     await initialProvisionNode({
       controller: controllerContext,
@@ -135,10 +153,11 @@ export class LifecycleResolver {
       coreTemplateId: managedNode.coreTemplate.id,
     });
 
+    console.log('Provisioining complete');
 
     const result = await controller.getNodeInfo(newNode.id);
 
-    console.log(result)
+    console.log(result);
 
     await provisioner.loadKeys();
     await provisioner.initProvisioner(result.network.host);
@@ -150,17 +169,23 @@ export class LifecycleResolver {
 
     const currentProdInfo = await controller.getNodeInfo(managedNode.node);
 
+    console.log(currentProdInfo);
+
     if (configuration.copyFiles.length > 0)
-      await Promise.all(
-        configuration.copyFiles.map((copy) =>
-          processCopyFiles(
-            {
-              sourceHost: currentProdInfo.network.host,
-              destHost: result.network.host,
-            },
-            copy,
-          ),
-        ),
+      processCopyFiles(
+        {
+          sourceHost: currentProdInfo.network.host,
+          destHost: result.network.host,
+        },
+        configuration.copyFiles,
+      );
+    if (configuration.copyDirs.length > 0)
+      await processCopyDirs(
+        {
+          sourceHost: currentProdInfo.network.host,
+          destHost: result.network.host,
+        },
+        configuration.copyDirs,
       );
     if (configuration.install.length > 0)
       await processInstall(result.network.host, configuration.install);
@@ -168,7 +193,7 @@ export class LifecycleResolver {
       await processEXEC(
         result.network.host,
         configuration.exec,
-        newNode.id,
+        nodeId,
         decodeENV(lifecycle.config),
       );
 

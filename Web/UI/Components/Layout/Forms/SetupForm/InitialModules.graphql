@@ -1,0 +1,7 @@
+query InitialModules {
+  initialModules {
+    type
+    label: name
+    value: git
+  }
+}

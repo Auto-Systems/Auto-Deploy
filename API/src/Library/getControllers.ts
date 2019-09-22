@@ -4,6 +4,8 @@ import { resolve } from 'path';
 import { ControllerClass } from 'API/Controller/types';
 import { Controller } from 'API/Modules/Controllers/ControllerModel';
 
+export const ControllerPath = process.env['NODE_ENV'] === 'production' ? resolve('/Controllers') : resolve(`${__dirname}/../Controller`)
+
 interface ControllerModule {
   name: string;
   path: string;
@@ -12,7 +14,7 @@ interface ControllerModule {
 export const controllers: ControllerModule[] = [];
 
 const filenames = glob.sync(
-  resolve(`${__dirname}/../Controller/*/*Controller.*s`),
+  resolve(`${ControllerPath}/*/*Controller.js`),
 );
 for (const filename of filenames) {
   const module = require(filename);
@@ -27,9 +29,8 @@ for (const filename of filenames) {
 
 export async function getFiles(): Promise<ControllerModule[]> {
   const stuff: ControllerModule[] = []
-  const filenames = glob.sync(
-    resolve(`${__dirname}/../Controller/*/*Controller.*s`),
-  );
+  const filenames = glob.sync(resolve(`${ControllerPath}/*/*Controller.js`));
+  console.log(filenames)
   for (const filename of filenames) {
     const module = require(filename);
     for (const [, controllerClass] of Object.entries(module as ControllerClass[]))

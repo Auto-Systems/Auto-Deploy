@@ -13,7 +13,8 @@
     "last 1 Chrome version"
   ],
   "alias": {
-    "UI": "./UI"
+    "UI": "./UI",
+    "server": "./Server"
   },
   "prettier": {
     "singleQuote": true,

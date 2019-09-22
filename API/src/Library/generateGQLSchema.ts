@@ -8,6 +8,7 @@ export function generateGQLSchema(): Promise<GraphQLSchema> {
   return buildSchema({
     resolvers: [
       resolve(`${__dirname}/../Modules/**/*Resolver.ts`),
+      resolve(`${__dirname}/../Modules/**/*Resolver.js`),
     ],
     authChecker,
     emitSchemaFile: '../API.graphql'

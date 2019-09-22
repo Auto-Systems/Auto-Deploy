@@ -8,7 +8,9 @@ export enum ProvisionerMethodENUM {
   'initFiles' = 'initFiles',
   'createWriteStream' = 'createWriteStream',
   'createReadStream' = 'createReadStream',
-  'listDirectory' = 'listDirectory'
+  'listDirectory' = 'listDirectory',
+  'createDirectory' = 'createDirectory',
+  'lab' = 'lab'
 }
 
 export type ProvisionerMethod =
@@ -20,6 +22,8 @@ export type ProvisionerMethod =
   | 'initFiles'
   | 'createWriteStream'
   | 'listDirectory'
+  | 'createDirectory'
+  | 'lab'
   | 'createReadStream';
 
 export interface ProvisionerConfiguration {
@@ -38,7 +42,8 @@ export interface AddAuthenticationInput {
 }
 
 export interface File {
-  filename: string;
+  path: string;
+  isDirectory: Promise<boolean>
 }
 
 export interface ProvisionerModule {
@@ -59,6 +64,8 @@ export interface ProvisionerModule {
 
   listDirectory: (dirPath: string) => Promise<File[]>
 
+  lab: (path: string) => any
+
   /**
    * Create write stream to file on node;
    */
@@ -68,6 +75,8 @@ export interface ProvisionerModule {
    * Create readstream to file on node
    */
   createReadStream: (filePath: string) => Promise<import('stream').Readable>;
+
+  createDirectory: (dirPath: string) => Promise<void>
 }
 
 export type MethodNames = { [method in ProvisionerMethod]: string };

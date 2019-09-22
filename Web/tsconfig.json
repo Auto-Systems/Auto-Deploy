@@ -10,7 +10,7 @@
     "baseUrl": ".",
     "paths": {
       "UI/*": ["./UI/*"],
-      "Server": ["./Server/*"]
+      "Server": ["server/*"]
     },
     "typeRoots": ["./types"],
     "esModuleInterop": true,

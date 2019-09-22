@@ -14,6 +14,25 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     userTable: {
       width: '100%'
+    },
+    logs: {
+      color: 'white',
+      whiteSpace: 'pre-wrap',
+      backgroundColor: '#151515',
+      boxSizing: 'border-box',
+      margin: '0 auto',
+      padding: '20px',
+      borderBottomLeftRadius: '5px',
+      borderBottomRightRadius: '5px',
+    },
+    log: {
+      backgroundColor: '#151515',
+      '&:hover': {
+        background: 'grey'
+      }
+    },
+    logResult: {
+
     }
   })
 );
