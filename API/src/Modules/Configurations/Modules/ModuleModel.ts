@@ -69,6 +69,9 @@ export class Module extends BaseEntity {
         { key: 'GIT_URL', value: git },
         { key: 'TYPE', value: moduleType! },
       ],
+      hostConfig: {
+        VolumesFrom: ['autodeploy']
+      }
     });
   }
 
