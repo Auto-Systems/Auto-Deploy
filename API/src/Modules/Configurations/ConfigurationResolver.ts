@@ -5,11 +5,9 @@ import { createInstalledProvisioners } from 'API/Library/getProvisioner';
 import {
   Arg,
   Authorized,
-  Field,
   FieldResolver,
   ForbiddenError,
   Mutation,
-  ObjectType,
   Query,
   Resolver,
   Root,
@@ -20,15 +18,11 @@ import { User, UserRole } from '../User/UserModel';
 import { SaveConfigurationInput } from './ConfigurationInput';
 import { Configuration } from './ConfigurationModel';
 import { InitialConfigurationInput } from './InitialConfigurationInput';
-
-@ObjectType()
-class InitialModule {
-  @Field()
-  name: string;
-
-  @Field()
-  git: string;
-}
+import { Module, ModuleType } from './Modules/ModuleModel';
+import {
+  initialControllerModules,
+  initialProvisionerModules,
+} from './Modules/ModuleResolver';
 
 @Resolver(() => Configuration)
 export class ConfigurationResolver {
@@ -36,29 +30,6 @@ export class ConfigurationResolver {
   @Query(() => Configuration)
   async configuration(): Promise<Configuration> {
     return Configuration.findOneOrFail({ id: 1 });
-  }
-
-  @Query(() => [InitialModule])
-  async getInitialControllers(): Promise<InitialModule[]> {
-    if (await Configuration.isSetupCompleted()) throw new ForbiddenError();
-    return [
-      {
-        name: 'vCenter',
-        git: 'https://github.com/Auto-Systems/vCenter-Controller.git',
-      },
-    ];
-  }
-
-  @Query(() => [InitialModule])
-  async getIntialProvisioners(): Promise<InitialModule[]> {
-    if (await Configuration.isSetupCompleted()) throw new ForbiddenError();
-    else
-      return [
-        {
-          name: 'SSH',
-          git: 'https://github.com/Auto-Systems/SSH-Provisioner.git',
-        },
-      ];
   }
 
   @Query(() => Boolean)
@@ -79,8 +50,20 @@ export class ConfigurationResolver {
     if (isSetup) throw new ForbiddenError();
 
     await Promise.all([
-      Controller.downloadController(initialControllerGit),
-      Provisioner.downloadProvisioner(initialProvisionerGit),
+      Module.installModule({
+        name: initialControllerModules.find(
+          ({ git }) => git === initialControllerGit,
+        )!.name,
+        type: ModuleType.CONTROLLER,
+        git: initialControllerGit,
+      }),
+      Module.installModule({
+        name: initialProvisionerModules.find(
+          ({ git }) => git === initialProvisionerGit,
+        )!.name,
+        type: ModuleType.PROVISIONER,
+        git: initialProvisionerGit,
+      }),
     ]);
 
     await Promise.all([
