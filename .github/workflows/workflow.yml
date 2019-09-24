@@ -12,7 +12,7 @@ jobs:
       uses: KristianFJones/Publish-Docker-Github-Action@master
       with:
         dockerfile: API/Dockerfile
-        name: docker.pkg.github.com/Auto-Systems/Auto-Deploy/server
+        name: docker.pkg.github.com/auto-systems/auto-deploy/server
         username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
@@ -22,7 +22,7 @@ jobs:
       uses: KristianFJones/Publish-Docker-Github-Action@master
       with:
         dockerfile: Web/Dockerfile
-        name: docker.pkg.github.com/Auto-Systems/Auto-Deploy/UI
+        name: docker.pkg.github.com/auto-systems/auto-deploy/UI
         username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
