@@ -1,0 +1,32 @@
+name: Publish API Docker image
+on: 
+  push:
+    branches:    
+      - master
+    paths:
+      - 'API/*'
+      - 'API/*/*'
+      - 'API/*/*/*'
+      - 'API/*/*/*/*'
+      - 'API/*/*/*/*/*'
+      - 'API/*/*/*/*/*/*'
+      - 'API/*/*/*/*/*/*/*'
+      - 'API/*/*/*/*/*/*/*/*'
+      - 'API/*/*/*/*/*/*/*/*/*'
+      - 'API/*/*/*/*/*/*/*/*/*/*'
+      - '.github/workflows/API.yml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: textbook/git-checkout-submodule-action@master
+    - name: Publish to Registry
+      uses: KristianFJones/Publish-Docker-Github-Action@master
+      with:
+        dockerfile: API/Dockerfile
+        name: docker.pkg.github.com/auto-systems/auto-deploy/server
+        username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
+        registry: docker.pkg.github.com
+        path: API
