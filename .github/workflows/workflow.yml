@@ -1,0 +1,30 @@
+name: Publish Docker
+on: 
+  push:
+    branches:    
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Publish to Registry
+      uses: KristianFJones/Publish-Docker-Github-Action@master
+      with:
+        dockerfile: API/Dockerfile
+        name: docker.pkg.github.com/Auto-Systems/Auto-Deploy/server
+        username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
+        registry: docker.pkg.github.com
+        path: API
+        cache: true
+    - name: Publish to Registry
+      uses: KristianFJones/Publish-Docker-Github-Action@master
+      with:
+        dockerfile: Web/Dockerfile
+        name: docker.pkg.github.com/Auto-Systems/Auto-Deploy/UI
+        username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
+        registry: docker.pkg.github.com
+        path: Web
+        cache: true
