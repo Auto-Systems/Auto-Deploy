@@ -17,14 +17,12 @@ jobs:
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
         path: API
-        cache: true
     - name: Publish to Registry
       uses: KristianFJones/Publish-Docker-Github-Action@master
       with:
         dockerfile: Web/Dockerfile
-        name: docker.pkg.github.com/auto-systems/auto-deploy/UI
+        name: docker.pkg.github.com/auto-systems/auto-deploy/ui
         username: ${{ secrets.DOCKER_GITHUB_USERNAME }}
         password: ${{ secrets.DOCKER_GITHUB_PASSWORD }}
         registry: docker.pkg.github.com
         path: Web
-        cache: true
