@@ -48,7 +48,7 @@
     "dotenv": "^8.1.0",
     "fs-extra": "^8.1.0",
     "globby": "^10.0.1",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "koa": "^2.8.1",
     "module-alias": "^2.2.1",
     "p-event": "^4.1.0",
