@@ -43,7 +43,7 @@
   "dependencies": {
     "@koa/router": "^8.0.1",
     "apollo-server-koa": "^2.9.3",
-    "class-validator": "^0.10.0",
+    "class-validator": "^0.14.0",
     "dockerode": "^2.5.8",
     "dotenv": "^8.1.0",
     "fs-extra": "^8.1.0",
